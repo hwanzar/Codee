@@ -9,7 +9,7 @@ int n, m; // vertice, edge
 int neighborX[4] = {0, 0, 1, -1};
 int neighborY[4] = {1, -1, 0, 0};
 int vis[MAXN][MAXN];
-char3333333333 grid[MAXN][MAXN];
+char grid[MAXN][MAXN];
 
 int isValid(int y, int x)
 {
