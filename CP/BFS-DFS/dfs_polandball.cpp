@@ -38,5 +38,5 @@ int main()
             cntTree++;
         }
     }
-    cout << cntTree << '\n';
+    cout << cntTree << '\n``';
 }
