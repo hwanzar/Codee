@@ -21,5 +21,4 @@ void dfs(int s)
 }
 int main()
 {
-    asjkfhkjasfadshfklasjf
 }
