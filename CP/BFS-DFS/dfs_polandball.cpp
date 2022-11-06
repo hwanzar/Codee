@@ -21,8 +21,6 @@ void dfs(int s)
 
 int main()
 {
-<<<<<<< HEAD
-=======
     int n;
     cin >> n;
     for (int i = 1; i <= n; i++)
@@ -42,5 +40,4 @@ int main()
         }
     }
     cout << cntTree << '\n``';
->>>>>>> 9a75c3547cd740deef8ceed90fb71d76188022b9
 }
