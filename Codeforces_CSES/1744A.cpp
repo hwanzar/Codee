@@ -38,8 +38,8 @@ int main()
                     }
                 }
             }
+            string ans = (flag) ? "YES" : "NO";
+            cout << ans << endl;
         }
-        string ans = (flag) ? "YES" : "NO";
-        cout << ans << endl;
     }
 }
