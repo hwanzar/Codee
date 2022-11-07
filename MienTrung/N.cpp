@@ -17,5 +17,6 @@ int main()
     {
         solve();
     }
-    return 0;
+	cout << "vim compileeeeeeeeeeeee" << endl;
+	return 0;
 }

@@ -30,7 +30,7 @@ vector<int> twoSum(vector<int> &nums, int target)
         if (v[i].first + v[j].first > target)
             j++;
     }
-    return {idx1, idx2};
+	return {idx1, idx2};
 }
 
 int main()
@@ -41,7 +41,4 @@ int main()
     vector<int> nums(n);
     int target;
     cin >> target;
-    vector<int> ans;
-    ans = twoSum(nums, target);
-    cout << ans[0].first << ans[0].second;
 }
