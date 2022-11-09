@@ -33,8 +33,8 @@ int main(){
     }
     int tar;
     cin >> tar;
-    Solution solve;
-    int res = solve.searchInsert(nums,tar);
+    Solution solved;
+    int res = solved.searchInsert(nums,tar);
     cout << res << endl;
     return 0;
 }
