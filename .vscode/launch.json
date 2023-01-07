@@ -7,9 +7,9 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
-      "externalConsole": false,
-      "cwd": "/mnt/d/Codee",
-      "program": "/mnt/d/Codee/build/Debug/outDebug",
+      "externalConsole": true,
+      "cwd": "d:/Codee",
+      "program": "d:/Codee/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
