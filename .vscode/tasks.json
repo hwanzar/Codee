@@ -2,23 +2,14 @@
     "tasks": [
         {
             "type": "cppbuild",
-<<<<<<< HEAD
-            "label": "C/C++: g++.exe build active file",
-            "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
-=======
             "label": "C/C++: g++ build active file",
             "command": "/usr/bin/g++",
->>>>>>> 9a75c3547cd740deef8ceed90fb71d76188022b9
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
                 "-o",
-<<<<<<< HEAD
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-=======
                 "${fileDirname}/${fileBasenameNoExtension}"
->>>>>>> 9a75c3547cd740deef8ceed90fb71d76188022b9
             ],
             "options": {
                 "cwd": "${fileDirname}"
