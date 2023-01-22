@@ -1,19 +1,23 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Book{
+class Book
+{
 private:
-    char* title;
-    char* authors;
+    char *title;
+    char *authors;
     int publishingYear;
+
 public:
-    Book(){
+    Book()
+    {
         title = nullptr;
         authors = nullptr;
         publishingYear = 0;
     }
 
-    Book(const char* title, const char* authors, int publishingYear){
+    Book(const char *title, const char *authors, int publishingYear)
+    {
         string new_title(title);
         string new_authors(authors);
         this->title = new char[new_title.length() + 1];
@@ -23,7 +27,8 @@ public:
         this->publishingYear = publishingYear;
     }
 
-    ~Book(){
+    ~Book()
+    {
         this->title = nullptr;
         this->authors = nullptr;
     }
@@ -31,17 +36,30 @@ public:
     friend class Printer;
 };
 
-class Printer{
+class Printer
+{
 public:
-    static void printBook(const Book book){
+    static void printBook(const Book book)
+    {
         cout << book.title << '\n';
         string s(book.authors);
-        for(unsigned i = 0; i < s.length(); i++){
-            
+        for (unsigned i = 0; i < s.length(); i++)
+        {
+            if (s[i] == ',')
+            {
+                cout << endl;
+                i++;
+            }
+            else
+                cout << s[i];
         }
+        cout << endl;
+        cout << book.publishingYear;
     }
 };
 
-int main(){
-
+int main()
+{
+    Book book1("Giai tich 1", "Nguyen Dinh Huy, Nguyen Thi Xuan Anh", 2000);
+    Printer::printBook(book1);
 }
