@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/mnt/d/Codee/Dojo",
-      "program": "/mnt/d/Codee/Dojo/build/Debug/outDebug",
+      "cwd": "/mnt/d/Codee",
+      "program": "/mnt/d/Codee/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
