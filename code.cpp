@@ -7,12 +7,10 @@ void hello(){
   return;
 }
 
-int helloo(){
-  return 11111111;
-}
+int main(){ 
+    int* num = NULL;
+    *num = 42;
+    cout << &num;
+    return 0;
 
-int main(){
-  hello();
-  cout << helloo();
-return 0;
 }
