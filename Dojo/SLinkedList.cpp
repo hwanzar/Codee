@@ -1,16 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template<class T>
-class IList{
-  public:
-    virtual ~IList(){};
-    virtual void add(T e)=0;
-    
-    virtual void add(int index,T e)=0;
-    
-};
+class LLNode {
+public:
+  int val;
+  LLNode *next;
+  LLNode();
+  LLNode(int val, LLNode *next);
 
-int main(){
-    cout << "Hello we finish the tab"
+  LlNode *addLinkedList(LLNode *l0, LLNode *l1);
 }

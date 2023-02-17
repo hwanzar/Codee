@@ -40,8 +40,7 @@ class List {
 
 int main(){
     List list;
-    if (list.add(42) && list.add(13)){
-        cout << list.get(0) << endl;
+    if (list.add(42) && list.add(13)){    cout << list.get(0) << endl;
         cout << list.get(1) << endl;
         cout << list.getSize() << endl;
     }
