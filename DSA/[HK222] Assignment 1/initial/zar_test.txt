@@ -1,0 +1,5 @@
+REG 1 Gia 19
+REG Gia 115
+REGM Gia 234
+CLE 1
+PQ 3

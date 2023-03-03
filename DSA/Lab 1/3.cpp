@@ -4,30 +4,37 @@ using namespace std;
 class Point
 {
 private:
-    double x,y;
+    double x, y;
+
 public:
-    Point(){
+    Point()
+    {
         x = 0;
         y = 0;
     }
-    Point(double x, double y){
-        this -> x = x;
-        this -> y = y;
+    Point(double x, double y)
+    {
+        this->x = x;
+        this->y = y;
     }
-    void setX(double x){
-        this -> x = x;
+    void setX(double x)
+    {
+        this->x = x;
     }
-    void setY(double y){
-        this -> y = y;
+    void setY(double y)
+    {
+        this->y = y;
     }
-    double getX() const{
+    double getX() const
+    {
         return x;
     }
-    double getY() const{
+    double getY() const
+    {
         return y;
     }
-    /*  
-     * STUDENT ANSWER   
+    /*
+     * STUDENT ANSWER
      * TODO: using code template in previous question
      */
 };
@@ -41,8 +48,8 @@ private:
 public:
     Circle()
     {
-        /*  
-         * STUDENT ANSWER   
+        /*
+         * STUDENT ANSWER
          * TODO: set zero center's x-y and radius
          */
         this->center.setX(0);
@@ -52,28 +59,27 @@ public:
 
     Circle(Point center, double radius)
     {
-        /*  
+        /*
          * STUDENT ANSWER
          */
         this->center.setX(center.getX());
         this->center.setY(center.getY());
-        this -> radius = radius;
+        this->radius = radius;
     }
 
     Circle(const Circle &circle)
     {
-        /*  
+        /*
          * STUDENT ANSWER
          */
         this->radius = circle.getRadius();
         this->center.setX(circle.center.getX());
         this->center.setY(circle.center.getY());
-        
     }
-    
+
     void setCenter(Point point)
     {
-        /*  
+        /*
          * STUDENT ANSWER
          */
         this->center.setX(point.getX());
@@ -82,15 +88,15 @@ public:
 
     void setRadius(double radius)
     {
-        /*  
+        /*
          * STUDENT ANSWER
          */
-        this -> radius = radius;
+        this->radius = radius;
     }
 
     Point getCenter() const
     {
-        /*  
+        /*
          * STUDENT ANSWER
          */
         return center;
@@ -98,19 +104,20 @@ public:
 
     double getRadius() const
     {
-        /*  
+        /*
          * STUDENT ANSWER
          */
         return radius;
     }
-    
+
     void printCircle()
     {
         printf("Center: {%.2f, %.2f} and Radius %.2f\n", this->center.getX(), this->center.getY(), this->radius);
     }
 };
 
-int main(){
+int main()
+{
     Circle A;
     A.printCircle();
 }

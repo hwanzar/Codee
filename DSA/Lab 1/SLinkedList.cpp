@@ -14,6 +14,15 @@ public:
     }
 };
 
-int main()
+template <class T>
+class SLinkedList
+{
+public:
+    Node<T> *head;
+
+}
+
+int
+main()
 {
 }
