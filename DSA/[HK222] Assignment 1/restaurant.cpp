@@ -197,7 +197,7 @@ void printReverse(DLL &dll, int index)
         throw out_of_range("Index out of range");
     }
     DLL::Node *cur = dll.tail;
-    for (int i = dll.size() - 1; i >= index; i--)
+    for (int i = dll.size() - 1; i >= dll.size() - index; i--)
     {
         cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
         cur = cur->prev;
@@ -316,11 +316,11 @@ int getAge(string input)
 }
 // change wait list to queue
 DLL waitlist;
-DLL history;
+DLL history; // lưu lại danh sách người đến nhà hàng (kể cả người đợi) vào stack để lấy ra người gần nhất đến nhà hàng
 
 // restaurant *waitlist = new restaurant();
 
-void reg(string input, restaurant *r, DLL waitlist, DLL history)
+void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
 {
     // neu khach hang dat ban theo ID
     //  table empty, update thong tin khach hang
@@ -348,7 +348,7 @@ void reg(string input, restaurant *r, DLL waitlist, DLL history)
                 // ban trong
                 tb->name = name;
                 tb->age = age;
-                history.push_back(id, name, age);
+                history->add(id, name, age);
                 break;
             }
             else
@@ -363,8 +363,8 @@ void reg(string input, restaurant *r, DLL waitlist, DLL history)
             // waitlist->recentTable = waitlist->insert(waitlist->recentTable, -100, name, age);
             cout << "The restaurant is full!";
             // table *tb = new table(id, name, age, nullptr);
-            waitlist.push_back(id, name, age);
-            history.push_back(id, name, age);
+            waitlist->add(id, name, age);
+            history->add(id, name, age);
         }
     }
     else
@@ -386,7 +386,7 @@ void reg(string input, restaurant *r, DLL waitlist, DLL history)
             {
                 tb->name = name;
                 tb->age = age;
-                history.push_back(id, name, age);
+                history->add(id, name, age);
                 break;
             }
             tb = tb->next;
@@ -397,8 +397,8 @@ void reg(string input, restaurant *r, DLL waitlist, DLL history)
             // waitlist->recentTable = waitlist->insert(waitlist->recentTable, id, name, age);
             cout << "The restaurant is full!";
 
-            waitlist.push_back(id, name, age);
-            history.push_back(id, name, age);
+            waitlist->add(id, name, age);
+            history->add(id, name, age);
         }
     }
 }
@@ -506,7 +506,7 @@ void cle(string input)
     return;
 }
 
-void ps(string input, DLL History)
+void ps(string input, DLL *History)
 {
     int num = getNum(input);
     if (num == -1)
@@ -514,7 +514,7 @@ void ps(string input, DLL History)
         // chỉ có mỗi lệnh PS thôi. ko có [NUM].
         //
     }
-    printForward(History, num);
+    printReverse(*History, num);
     return;
 }
 
@@ -522,21 +522,21 @@ void pq()
 {
     return;
 }
-void printTable(restaurant r)
+void printTable(restaurant *r)
 {
-    if (r.recentTable == nullptr)
+    if (r->recentTable == nullptr)
     {
         cout << "No tables in the restaurant." << endl;
         return;
     }
 
     cout << "Tables in the restaurant:" << endl;
-    table *cur = r.recentTable->next; // start from the first table
+    table *cur = r->recentTable->next; // start from the first table
     do
     {
         cout << "ID: " << cur->ID << ", Name: " << cur->name << ", Age: " << cur->age << endl;
         cur = cur->next;
-    } while (cur != r.recentTable->next); // iterate until we reach the starting table again
+    } while (cur != r->recentTable->next); // iterate until we reach the starting table again
 }
 
 void simulate(string filename, restaurant *r)
@@ -555,7 +555,7 @@ void simulate(string filename, restaurant *r)
                 // cout << getName(line) << endl;
                 // cout << getAge(line) << endl;
                 // printTable(*r);
-                reg(line, r, waitlist, history);
+                reg(line, r, &waitlist, &history);
             }
             // if (filtCommand(line) == "REGM")
             // {
@@ -567,7 +567,7 @@ void simulate(string filename, restaurant *r)
             // }
             if (filtCommand(line) == "PS")
             {
-                ps(line, history);
+                ps(line, &history);
             }
         }
 

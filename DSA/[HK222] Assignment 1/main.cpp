@@ -4,8 +4,8 @@
 int main(int argc, char *argv[])
 {
     restaurant *r = new restaurant();
-    string fileName = "zar_test.txt";
-    // string fileName = "test.txt";
+    // string fileName = "zar_test.txt";
+    string fileName = "test.txt";
     // initialize table with ID, name and age
     for (int i = 1; i <= MAXSIZE; i++)
     {
@@ -13,8 +13,7 @@ int main(int argc, char *argv[])
     }
     simulate(fileName, r);
     cout << endl;
-    printTable(*r);
-
+    printTable(r);
     delete r;
     return 0;
 }
