@@ -1,16 +1,17 @@
 #include "main.h"
 
-template <class E>
 class DLL
 {
 public:
     class Node
     {
     public:
-        E data;
+        int ID;
+        string name;
+        int age;
         Node *prev;
         Node *next;
-        Node(const E &data = E{}, Node *next = nullptr, Node *prev = nullptr) : data(data), next(next), prev(prev) {}
+        Node(int ID = 0, string name = "", int age = 0, Node *next = nullptr, Node *prev = nullptr) : ID(ID), name(name), age(age), next(next), prev(prev) {}
     };
 
 public:
@@ -24,19 +25,19 @@ public:
         clear();
     }
 
-    void add(const E &value)
+    void add(int ID, string name, int age)
     {
         // O(1)
         if (cnt == 0)
         {
-            Node *node = new Node(value);
+            Node *node = new Node(ID, name, age);
             head = node;
             tail = node;
             tail->next = nullptr;
             cnt++;
             return;
         }
-        Node *node = new Node(value);
+        Node *node = new Node(ID, name, age);
         node->prev = tail;
         tail->next = node;
         node->next = nullptr;
@@ -44,7 +45,7 @@ public:
         cnt++;
         return;
     }
-    void add(int index, const E &e)
+    void add(int index, int ID, string name, int age)
     {
         // O(index)
         if (index < 0 || index > cnt)
@@ -54,12 +55,12 @@ public:
 
         if (cnt == 0)
         {
-            add(e);
+            add(ID, name, age);
             return;
         }
         if (index == 0)
         {
-            Node *node = new Node(e);
+            Node *node = new Node(ID, name, age);
             node->next = head;
             head->prev = node;
             head = node;
@@ -68,7 +69,7 @@ public:
         }
         if (index == cnt)
         {
-            add(e);
+            add(ID, name, age);
             return;
         }
         Node *cur = head;
@@ -77,7 +78,7 @@ public:
             cur = cur->next;
         }
         // add node
-        Node *addNode = new Node(e, cur->prev, cur);
+        Node *addNode = new Node(ID, name, age, cur->prev, cur);
         cur->prev->next = addNode;
         cur->prev = addNode;
         cnt++;
@@ -89,18 +90,16 @@ public:
     }
     void clear()
     {
-        Node *current = head;
-        while (current != tail)
+        while (head != nullptr)
         {
-            Node *temp = current;
-            current = current->next;
+            Node *temp = head;
+            head = head->next;
             delete temp;
         }
-        // head->next = tail;
-        // tail->prev = head;
+        tail = nullptr;
         cnt = 0;
     }
-    E removeAt(int index)
+    Node *removeAt(int index)
     {
         if (cnt == 0 || index < 0 || index >= cnt)
         {
@@ -114,7 +113,6 @@ public:
             prev = cur;
             cur = cur->next;
         }
-        E res = cur->data;
         // now delete
         if (prev == nullptr)
         {
@@ -131,141 +129,81 @@ public:
             prev->next = cur->next;
             (cur->next)->prev = prev;
         }
-        delete cur;
         cnt--;
-        return res;
+        return cur;
     }
-    bool removeItem(const E &item)
+    void push_front(int ID, string name, int age)
     {
-        Node *temp = head;
-        for (int i = 0; temp != nullptr; i++)
-        {
-            if (temp->data == item)
-            {
-                removeAt(i);
-                return true;
-            }
-            temp = temp->next;
-        }
-        return false;
+        add(0, ID, name, age);
     }
-    void printTail()
+    void push_back(int ID, string name, int age)
     {
-        cout << "[";
-        if (tail != nullptr)
+        add(ID, name, age);
+    }
+    void pop_front()
+    {
+        removeAt(0);
+    }
+    void pop_back()
+    {
+        removeAt(cnt - 1);
+    }
+
+    Node *front()
+    {
+        if (cnt == 0)
         {
-            cout << tail->data;
-            Node *current = tail->prev;
-            while (current != nullptr)
-            {
-                cout << "," << current->data;
-                current = current->prev;
-            }
+            throw out_of_range("Deque is empty");
         }
-        cout << "]" << endl;
+        return head;
+    }
+    Node *back()
+    {
+        if (cnt == 0)
+        {
+            throw out_of_range("Deque is empty");
+        }
+        return tail;
     }
 };
-// preparation of double linked list for stack and queue
-template <class E>
-class Stack
+void printForward(DLL &dll, int index)
 {
-public:
-    DLL<E> list;
-
-public:
-    Stack() {}
-
-    void push(const E &item)
+    if (dll.empty())
     {
-        list.add(item); // O(1)
+        cout << "Deque is empty" << endl;
+        return;
     }
-
-    E pop()
+    if (index < 0 || index >= dll.size())
     {
-        if (list.empty())
-        {
-            throw runtime_error("Stack is empty");
-        }
-        return list.removeAt(list.size() - 1);
+        throw out_of_range("Index out of range");
     }
-
-    E peek()
+    DLL::Node *cur = dll.head;
+    for (int i = 0; i <= index; i++)
     {
-        if (list.empty())
-        {
-            throw runtime_error("Stack is empty");
-        }
-        return list.tail->data;
+        cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        cur = cur->next;
     }
+}
 
-    int size()
-    {
-        return list.size();
-    }
-
-    bool empty()
-    {
-        return list.empty();
-    }
-    // void debug_DLL()
-    // {
-    //     cout << "[";
-    //     if (head != nullptr)
-    //     {
-    //         cout << head->data;
-    //         Node *current = head->next;
-    //         while (current != nullptr)
-    //         {
-    //             cout << "," << current->data;
-    //             current = current->next;
-    //         }
-    //     }
-    //     cout << "]" << endl;
-    // }
-};
-
-template <class E>
-class Queue
+void printReverse(DLL &dll, int index)
 {
-public:
-    DLL<E> list;
-
-public:
-    Queue() {}
-
-    void enqueue(const E &item)
+    if (dll.empty())
     {
-        list.add(item); // O(1)
+        cout << "Deque is empty" << endl;
+        return;
     }
-
-    E dequeue()
+    if (index < 0 || index >= dll.size())
     {
-        if (list.empty())
-        {
-            throw runtime_error("Queue is empty");
-        }
-        return list.removeAt(0);
+        throw out_of_range("Index out of range");
     }
-
-    E peek()
+    DLL::Node *cur = dll.tail;
+    for (int i = dll.size() - 1; i >= index; i--)
     {
-        if (list.empty())
-        {
-            throw runtime_error("Queue is empty");
-        }
-        return list.head->data;
+        cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        cur = cur->prev;
     }
+}
 
-    int size()
-    {
-        return list.size();
-    }
-
-    bool empty()
-    {
-        return list.empty();
-    }
-};
 string filtCommand(string filename)
 {
     string command;
@@ -377,12 +315,12 @@ int getAge(string input)
     return 0; // default value
 }
 // change wait list to queue
-Queue<table> waitlist;
-Stack<table> history; // lưu lại danh sách người đến nhà hàng (kể cả người đợi) vào stack để lấy ra người gần nhất đến nhà hàng
+DLL waitlist;
+DLL history;
 
 // restaurant *waitlist = new restaurant();
 
-void reg(string input, restaurant *r, Queue<table> waitlist, Stack<table> history)
+void reg(string input, restaurant *r, DLL waitlist, DLL history)
 {
     // neu khach hang dat ban theo ID
     //  table empty, update thong tin khach hang
@@ -410,7 +348,7 @@ void reg(string input, restaurant *r, Queue<table> waitlist, Stack<table> histor
                 // ban trong
                 tb->name = name;
                 tb->age = age;
-                history.push(*tb);
+                history.push_back(id, name, age);
                 break;
             }
             else
@@ -424,9 +362,9 @@ void reg(string input, restaurant *r, Queue<table> waitlist, Stack<table> histor
             // add to queue
             // waitlist->recentTable = waitlist->insert(waitlist->recentTable, -100, name, age);
             cout << "The restaurant is full!";
-            table *tb = new table(id, name, age, nullptr);
-            waitlist.enqueue(*tb);
-            history.push(*tb);
+            // table *tb = new table(id, name, age, nullptr);
+            waitlist.push_back(id, name, age);
+            history.push_back(id, name, age);
         }
     }
     else
@@ -448,6 +386,7 @@ void reg(string input, restaurant *r, Queue<table> waitlist, Stack<table> histor
             {
                 tb->name = name;
                 tb->age = age;
+                history.push_back(id, name, age);
                 break;
             }
             tb = tb->next;
@@ -457,9 +396,9 @@ void reg(string input, restaurant *r, Queue<table> waitlist, Stack<table> histor
         {
             // waitlist->recentTable = waitlist->insert(waitlist->recentTable, id, name, age);
             cout << "The restaurant is full!";
-            table *tb = new table(id, name, age, nullptr); // co xoa KOO???
-            waitlist.enqueue(*tb);                         // O(1).
-            history.push(*tb);
+
+            waitlist.push_back(id, name, age);
+            history.push_back(id, name, age);
         }
     }
 }
@@ -563,11 +502,11 @@ void regm(string input)
 void cle(string input)
 {
     int id = getID(input);
-    cout << "ID to CLE: " << id << endl;
+    // cout << "ID to CLE: " << id << endl;
     return;
 }
 
-void ps(string input, Stack<table> history)
+void ps(string input, DLL History)
 {
     int num = getNum(input);
     if (num == -1)
@@ -575,14 +514,29 @@ void ps(string input, Stack<table> history)
         // chỉ có mỗi lệnh PS thôi. ko có [NUM].
         //
     }
-    table tb = history.list.tail->data;
-    cout << "PS: age " << tb.age << endl;
+    printForward(History, num);
     return;
 }
 
 void pq()
 {
     return;
+}
+void printTable(restaurant r)
+{
+    if (r.recentTable == nullptr)
+    {
+        cout << "No tables in the restaurant." << endl;
+        return;
+    }
+
+    cout << "Tables in the restaurant:" << endl;
+    table *cur = r.recentTable->next; // start from the first table
+    do
+    {
+        cout << "ID: " << cur->ID << ", Name: " << cur->name << ", Age: " << cur->age << endl;
+        cur = cur->next;
+    } while (cur != r.recentTable->next); // iterate until we reach the starting table again
 }
 
 void simulate(string filename, restaurant *r)
@@ -600,17 +554,17 @@ void simulate(string filename, restaurant *r)
                 // cout << getID(line) << endl;
                 // cout << getName(line) << endl;
                 // cout << getAge(line) << endl;
-
+                // printTable(*r);
                 reg(line, r, waitlist, history);
             }
-            if (filtCommand(line) == "REGM")
-            {
-                regm(line);
-            }
-            if (filtCommand(line) == "CLE")
-            {
-                cle(line);
-            }
+            // if (filtCommand(line) == "REGM")
+            // {
+            //     regm(line);
+            // }
+            // if (filtCommand(line) == "CLE")
+            // {
+            //     cle(line);
+            // }
             if (filtCommand(line) == "PS")
             {
                 ps(line, history);
@@ -623,21 +577,4 @@ void simulate(string filename, restaurant *r)
     {
         cout << "Unable to open file" << endl;
     }
-}
-
-void printTable(restaurant r)
-{
-    if (r.recentTable == nullptr)
-    {
-        cout << "No tables in the restaurant." << endl;
-        return;
-    }
-
-    cout << "Tables in the restaurant:" << endl;
-    table *cur = r.recentTable->next; // start from the first table
-    do
-    {
-        cout << "ID: " << cur->ID << ", Name: " << cur->name << ", Age: " << cur->age << endl;
-        cur = cur->next;
-    } while (cur != r.recentTable->next); // iterate until we reach the starting table again
 }

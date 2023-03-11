@@ -1,16 +1,183 @@
 #include <bits/stdc++.h>
+#include "main.h"
 using namespace std;
-template <class E>
+// template <class E>
+// class DLL
+// {
+// public:
+//     class Node
+//     {
+//     public:
+//         E data;
+//         Node *prev;
+//         Node *next;
+//         Node(const E &data = E{}, Node *next = nullptr, Node *prev = nullptr) : data(data), next(next), prev(prev) {}
+//     };
+
+// public:
+//     Node *head;
+//     Node *tail;
+//     int cnt;
+
+//     DLL() : head(NULL), tail(NULL), cnt(0) {}
+//     ~DLL()
+//     {
+//         clear();
+//     }
+
+//     void add(const E &value)
+//     {
+//         if (cnt == 0)
+//         {
+//             Node *node = new Node(value);
+//             head = node;
+//             tail = node;
+//             tail->next = nullptr;
+//             cnt++;
+//             return;
+//         }
+//         Node *node = new Node(value);
+//         node->prev = tail;
+//         tail->next = node;
+//         node->next = nullptr;
+//         tail = node;
+//         cnt++;
+//         return;
+//     }
+//     void add(int index, const E &e)
+//     {
+//         if (index < 0 || index > cnt)
+//         {
+//             throw out_of_range("Index out of range");
+//         }
+
+//         if (cnt == 0)
+//         {
+//             add(e);
+//             return;
+//         }
+//         if (index == 0)
+//         {
+//             Node *node = new Node(e);
+//             node->next = head;
+//             head->prev = node;
+//             head = node;
+//             cnt++;
+//             return;
+//         }
+//         if (index == cnt)
+//         {
+//             add(e);
+//             return;
+//         }
+//         Node *cur = head;
+//         for (int i = 0; i < index; i++)
+//         {
+//             cur = cur->next;
+//         }
+//         // add node
+//         Node *addNode = new Node(e, cur->prev, cur);
+//         cur->prev->next = addNode;
+//         cur->prev = addNode;
+//         cnt++;
+//     }
+//     int size() { return cnt; }
+//     bool empty()
+//     {
+//         return cnt == 0;
+//     }
+//     void clear()
+//     {
+//         Node *current = head;
+//         while (current != tail)
+//         {
+//             Node *temp = current;
+//             current = current->next;
+//             delete temp;
+//         }
+//         head->next = tail;
+//         tail->prev = head;
+//         cnt = 0;
+//     }
+//     E removeAt(int index)
+//     {
+//         if (cnt == 0 || index < 0 || index >= cnt)
+//         {
+//             throw std::out_of_range("Invalid index");
+//         }
+//         Node *cur = head;
+//         Node *prev = nullptr;
+
+//         for (int i = 0; i < index; i++)
+//         {
+//             prev = cur;
+//             cur = cur->next;
+//         }
+//         E res = cur->data;
+//         // now delete
+//         if (prev == nullptr)
+//         {
+//             head = head->next;
+//             head->prev = nullptr;
+//         }
+//         else if (cur->next == nullptr)
+//         {
+//             prev->next = nullptr;
+//             tail = prev;
+//         }
+//         else
+//         {
+//             prev->next = cur->next;
+//             (cur->next)->prev = prev;
+//         }
+//         delete cur;
+//         cnt--;
+//         return res;
+//     }
+//     bool removeItem(const E &item)
+//     {
+//         Node *temp = head;
+//         for (int i = 0; temp != nullptr; i++)
+//         {
+//             if (temp->data == item)
+//             {
+//                 removeAt(i);
+//                 return true;
+//             }
+//             temp = temp->next;
+//         }
+//         return false;
+//     }
+//     void debug_DLL()
+//     {
+//         cout << "[";
+//         if (head != nullptr)
+//         {
+//             cout << head->data;
+//             Node *current = head->next;
+//             while (current != nullptr)
+//             {
+//                 cout << "," << current->data;
+//                 current = current->next;
+//             }
+//         }
+//         cout << "]" << endl;
+//     }
+// };
+// preparation of double linked list for stack and queue
+
 class DLL
 {
 public:
     class Node
     {
     public:
-        E data;
+        int ID;
+        string name;
+        int age;
         Node *prev;
         Node *next;
-        Node(const E &data = E{}, Node *next = nullptr, Node *prev = nullptr) : data(data), next(next), prev(prev) {}
+        Node(int ID = 0, string name = "", int age = 0, Node *next = nullptr, Node *prev = nullptr) : ID(ID), name(name), age(age), next(next), prev(prev) {}
     };
 
 public:
@@ -24,18 +191,19 @@ public:
         clear();
     }
 
-    void add(const E &value)
+    void add(int ID, string name, int age)
     {
+        // O(1)
         if (cnt == 0)
         {
-            Node *node = new Node(value);
+            Node *node = new Node(ID, name, age);
             head = node;
             tail = node;
             tail->next = nullptr;
             cnt++;
             return;
         }
-        Node *node = new Node(value);
+        Node *node = new Node(ID, name, age);
         node->prev = tail;
         tail->next = node;
         node->next = nullptr;
@@ -43,8 +211,9 @@ public:
         cnt++;
         return;
     }
-    void add(int index, const E &e)
+    void add(int index, int ID, string name, int age)
     {
+        // O(index)
         if (index < 0 || index > cnt)
         {
             throw out_of_range("Index out of range");
@@ -52,12 +221,12 @@ public:
 
         if (cnt == 0)
         {
-            add(e);
+            add(ID, name, age);
             return;
         }
         if (index == 0)
         {
-            Node *node = new Node(e);
+            Node *node = new Node(ID, name, age);
             node->next = head;
             head->prev = node;
             head = node;
@@ -66,7 +235,7 @@ public:
         }
         if (index == cnt)
         {
-            add(e);
+            add(ID, name, age);
             return;
         }
         Node *cur = head;
@@ -75,7 +244,7 @@ public:
             cur = cur->next;
         }
         // add node
-        Node *addNode = new Node(e, cur->prev, cur);
+        Node *addNode = new Node(ID, name, age, cur->prev, cur);
         cur->prev->next = addNode;
         cur->prev = addNode;
         cnt++;
@@ -87,18 +256,16 @@ public:
     }
     void clear()
     {
-        Node *current = head;
-        while (current != tail)
+        while (head != nullptr)
         {
-            Node *temp = current;
-            current = current->next;
+            Node *temp = head;
+            head = head->next;
             delete temp;
         }
-        head->next = tail;
-        tail->prev = head;
+        tail = nullptr;
         cnt = 0;
     }
-    E removeAt(int index)
+    Node *removeAt(int index)
     {
         if (cnt == 0 || index < 0 || index >= cnt)
         {
@@ -112,7 +279,6 @@ public:
             prev = cur;
             cur = cur->next;
         }
-        E res = cur->data;
         // now delete
         if (prev == nullptr)
         {
@@ -129,41 +295,10 @@ public:
             prev->next = cur->next;
             (cur->next)->prev = prev;
         }
-        delete cur;
         cnt--;
-        return res;
-    }
-    bool removeItem(const E &item)
-    {
-        Node *temp = head;
-        for (int i = 0; temp != nullptr; i++)
-        {
-            if (temp->data == item)
-            {
-                removeAt(i);
-                return true;
-            }
-            temp = temp->next;
-        }
-        return false;
-    }
-    void debug_DLL()
-    {
-        cout << "[";
-        if (head != nullptr)
-        {
-            cout << head->data;
-            Node *current = head->next;
-            while (current != nullptr)
-            {
-                cout << "," << current->data;
-                current = current->next;
-            }
-        }
-        cout << "]" << endl;
+        return cur;
     }
 };
-// preparation of double linked list for stack and queue
 template <class E>
 class Stack
 {
@@ -276,5 +411,13 @@ int main()
     q.enqueue(13);
     q.enqueue(14);
     cout << q.dequeue() << endl;
+
+    Queue<table> waitlist;
+    table *tb = new table(10, "Gia", 100, nullptr);
+    cout << tb->ID << endl;
+    waitlist.enqueue(*tb);
+    table tb1 = waitlist.list.head->data;
+    cout << tb1.age << endl;
+
     return 0;
 }
