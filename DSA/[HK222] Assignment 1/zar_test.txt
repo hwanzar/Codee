@@ -1,2 +1,7 @@
-REGM zar 19 2
+REG 1 Gia 115
+REG Gia 19
+REG 1 Tho 115
+REG 6 Gia 96
+REG 7 Duc 105
+REGM Zar 19 3
 PS

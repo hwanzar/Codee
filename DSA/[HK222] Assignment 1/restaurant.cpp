@@ -472,12 +472,13 @@ void regm(string input, restaurant *r, DLL *history)
     }
     table *tail = head;
     int cntEmpty = 1;
-    int maxID = head->ID;
+    int maxID = -1;
     bool flag = false; // check xem tim ra lien tuc chua
     table *res = nullptr;
     if (checkREGM == true)
         return;
-    for (int cnt = 1; cnt <= 2 * MAXSIZE; cnt++)
+    table *past_head = head;
+    for (int i = 0; i < 2 * MAXSIZE; i++)
     {
         if (flag == false)
         {
@@ -497,8 +498,9 @@ void regm(string input, restaurant *r, DLL *history)
             }
             else if (tail->next->name != "")
             {
-                head = head->next;
+                head = tail->next;
                 tail = head;
+                cout << tail->next->age << endl;
                 cntEmpty = 0;
             }
         }
@@ -511,7 +513,7 @@ void regm(string input, restaurant *r, DLL *history)
                 // di chuyen head
                 head = head->next;
                 tail = tail->next;
-                maxID = head->next->ID;
+                maxID = head->ID;
                 res = head;
             }
             else if (tail->next->name != "")
