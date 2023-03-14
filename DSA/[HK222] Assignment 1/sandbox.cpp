@@ -214,22 +214,100 @@ void printReverse(DLL &dll, int index)
     }
 }
 
+string getFirstWord(string input)
+{
+    // string command;
+    size_t pos = input.find(" ");
+    string command = input.substr(0, pos);
+    return command;
+}
+int countSpaces(string s)
+{
+    int count = 0;
+    for (int i = 0; i < s.length(); i++)
+    {
+        if (s.at(i) == ' ')
+        {
+            count++;
+        }
+    }
+    return count;
+}
+
+int getID(string input)
+{
+    string command = input.substr(0, 3); // extract first 3 characters
+    int cntSpc = -1;
+    string id_str = "";
+    if (command == "REG")
+    {
+        cntSpc = countSpaces(input);
+        if (cntSpc == 3)
+        {
+            int start = 4;
+            int end = input.find(" ", start);
+            id_str = input.substr(start, end - start);
+            return stoi(id_str);
+        }
+        else
+        {
+            return -100;
+        }
+    }
+    else if (command == "CLE")
+    {
+        int pos = input.rfind(" ");
+        string id_toCLE = input.substr(pos + 1);
+        return stoi(id_toCLE);
+    }
+    else
+    {
+        return -100; // not a valid command, return -100
+    }
+}
+int getNum(string input)
+{
+    // only for regm right?S
+    int pos = input.rfind(" ");
+    int num = -1;
+    if (pos != string::npos)
+    {
+        string num_str = input.substr(pos + 1);
+        num = stoi(num_str);
+        cout << "NUM " << num << endl;
+    }
+    return num;
+}
 int main()
 {
-    DLL dll;
-    dll.add(1, "Alice", 20);
-    dll.add(2, "Bob", 25);
-    dll.add(3, "Charlie", 30);
-    dll.add(4, "David", 35);
-    dll.add(5, "Eva", 40);
-
-    cout << "Printing DLL from head to index:" << endl;
-    printForward(dll, 3);
+    string input = "REGM Gia 18 2";
+    string firstWord = getFirstWord(input);
+    cout << "First word: " << firstWord << endl;
+    cout << firstWord.length() << endl;
 
     cout << endl;
-
-    cout << "Printing DLL in reverse from tail to index:" << endl;
-    printReverse(dll, 2);
-
+    cout << "DEBUG\n\n";
+    // cout << "ID: " << getID(input) << endl;
+    cout << getNum(input) << endl;
     return 0;
 }
+
+// int main()
+// {
+//     // DLL dll;
+//     // dll.add(1, "Alice", 20);
+//     // dll.add(2, "Bob", 25);
+//     // dll.add(3, "Charlie", 30);
+//     // dll.add(4, "David", 35);
+//     // dll.add(5, "Eva", 40);
+
+//     // cout << "Printing DLL from head to index:" << endl;
+//     // printForward(dll, 3);
+
+//     // cout << endl;
+
+//     // cout << "Printing DLL in reverse from tail to index:" << endl;
+//     // printReverse(dll, 2);
+
+//     return 0;
+// }

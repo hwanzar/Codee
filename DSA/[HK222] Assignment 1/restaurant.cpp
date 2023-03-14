@@ -1,4 +1,6 @@
 #include "main.h"
+table *latestTable = nullptr;
+bool checkREGM = false;
 
 class DLL
 {
@@ -166,21 +168,23 @@ public:
         return tail;
     }
 };
+
 void printForward(DLL &dll, int index)
 {
     if (dll.empty())
     {
-        cout << "Deque is empty" << endl;
+        cout << "Empty\n";
         return;
     }
-    if (index < 0 || index >= dll.size())
+    if (index < 0 || index > dll.size())
     {
         throw out_of_range("Index out of range");
     }
     DLL::Node *cur = dll.head;
-    for (int i = 0; i <= index; i++)
+    for (int i = 0; i < index; i++)
     {
-        cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        // cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        cout << cur->name << "\n";
         cur = cur->next;
     }
 }
@@ -189,57 +193,68 @@ void printReverse(DLL &dll, int index)
 {
     if (dll.empty())
     {
-        cout << "Deque is empty" << endl;
+        cout << "Empty\n";
         return;
     }
-    if (index < 0 || index >= dll.size())
+    if (index < 0 || index > dll.size())
     {
         throw out_of_range("Index out of range");
     }
     DLL::Node *cur = dll.tail;
     for (int i = dll.size() - 1; i >= dll.size() - index; i--)
     {
-        cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        // cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        cout << cur->name << "\n";
         cur = cur->prev;
     }
 }
 
-string filtCommand(string filename)
+string filtCommand(string input)
 {
-    string command;
-    int idx = 0;
-    while (idx < filename.size() && isspace(filename[idx]))
-    {
-        idx++;
-    }
-    while (idx < filename.size() && isspace(filename[idx]) == 0)
-    {
-        command += filename[idx];
-        idx++;
-    }
+    int pos = input.find(" ");
+    string command = input.substr(0, pos);
     return command;
 }
 
+int countSpaces(string s)
+{
+    int count = 0;
+    for (int i = 0; i < s.length(); i++)
+    {
+        if (s.at(i) == ' ')
+        {
+            count++;
+        }
+    }
+    return count;
+}
+/* Viet ham kiem tra mot chuoi co phai la so => Thoa man stoi */
 int getID(string input)
 {
     string command = input.substr(0, 3); // extract first 3 characters
+    int cntSpc = -1;
+    string id_str = "";
     if (command == "REG")
     {
-        int start = 4;
-        int end = input.find(" ", start);
-        if (end == string::npos)
+        cntSpc = countSpaces(input);
+        if (cntSpc == 3)
         {
-            return -100; // no ID number found, return -100
+            int start = 4;
+            int end = input.find(" ", start);
+            id_str = input.substr(start, end - start);
+            // cout << id_str << endl;
+            return stoi(id_str);
         }
-        string id_str = input.substr(start, end - start); // extract ID number as string
-        // cout << id_str;
-        return (id_str[0] <= '9' && id_str[0] >= '0') ? stoi(id_str) : -100; // convert ID number to integer and return
+        else
+        {
+            return -100;
+        }
     }
     else if (command == "CLE")
     {
-        size_t pos = input.rfind(" ");
+        int pos = input.rfind(" ");
         string id_toCLE = input.substr(pos + 1);
-        return (id_toCLE[0] <= '9' && id_toCLE[0] >= '0') ? stoi(id_toCLE) : -100;
+        return stoi(id_toCLE);
     }
     else
     {
@@ -250,7 +265,7 @@ string getName(string input)
 {
     // int pos;
     // cout << input << endl;
-    if (input.substr(0, 3) == "REG")
+    if (input.substr(0, 4) == "REG ")
     {
         int id = getID(input);
         int pos = input.find(" ");
@@ -271,13 +286,23 @@ string getName(string input)
             input = input.substr(0, pos);
         }
     }
+    if (input.substr(0, 4) == "REGM")
+    {
+        int pos = input.find(" ");
+        input = input.substr(pos + 1);
+        // cout << input << endl;
+        // input = input.substr(pos + 1);
 
-    return input;
+        input = input.substr(0, pos);
+    }
+
+    string name = input;
+    return name;
 }
 int getNum(string input)
 {
-    // only for regm right?
-    size_t pos = input.rfind(" ");
+    // only for regm right?S
+    int pos = input.rfind(" ");
     int num = -1;
     if (pos != string::npos)
     {
@@ -293,7 +318,7 @@ int getAge(string input)
     if (input.substr(0, 4) == "REG ")
     {
 
-        size_t pos = input.rfind(" ");
+        int pos = input.rfind(" ");
         if (pos != string::npos)
         {
             string age_str = input.substr(pos + 1);
@@ -315,10 +340,7 @@ int getAge(string input)
     return 0; // default value
 }
 // change wait list to queue
-DLL waitlist;
-DLL history; // lưu lại danh sách người đến nhà hàng (kể cả người đợi) vào stack để lấy ra người gần nhất đến nhà hàng
-
-// restaurant *waitlist = new restaurant();
+// lưu lại danh sách người đến nhà hàng (kể cả người đợi) vào stack để lấy ra người gần nhất đến nhà hàng
 
 void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
 {
@@ -335,12 +357,32 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
     if (age < 16)
         return;
     // cout << "Age: " << age << endl;
+    if (waitlist->size() == MAXSIZE || history->size() == 2 * MAXSIZE)
+    {
+        return;
+    }
+
+    // chia hai truong hop, co id va ko co id
+    table *cur = r->recentTable;
+    int minID = 100000;
+    for (int i = 0; i < MAXSIZE; i++)
+    {
+        if (cur->ID < minID)
+            minID = cur->ID;
+        cur = cur->next;
+    }
+    table *tb = cur;
+    while (tb->ID != minID)
+    {
+        tb = tb->next;
+    }
+
     if (id == -100)
     {
         // truong hop ko co id
         int i = 1;
 
-        table *tb = r->recentTable->next;
+        // table *tb = r->recentTable->next;
         while (i <= MAXSIZE)
         {
             if (tb->name == "")
@@ -349,6 +391,7 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
                 tb->name = name;
                 tb->age = age;
                 history->add(id, name, age);
+                latestTable = tb;
                 break;
             }
             else
@@ -362,7 +405,6 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
             // add to queue
             // waitlist->recentTable = waitlist->insert(waitlist->recentTable, -100, name, age);
             cout << "The restaurant is full!";
-            // table *tb = new table(id, name, age, nullptr);
             waitlist->add(id, name, age);
             history->add(id, name, age);
         }
@@ -374,7 +416,7 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
         //  truong hop co id, duyet den ban ko trong, nhung con ban khac trong
         //  truong hop full het ban
 
-        table *tb = r->recentTable->next;
+        // table *tb = r->recentTable->next;
         while (tb->ID != id)
         {
             tb = tb->next;
@@ -387,6 +429,7 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
                 tb->name = name;
                 tb->age = age;
                 history->add(id, name, age);
+                latestTable = tb;
                 break;
             }
             tb = tb->next;
@@ -402,100 +445,105 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
         }
     }
 }
-// table *mergableTables(restaurant *r, int num)
-// {
-//     // top of the table:
-//     if (num > MAXSIZE)
-//     {
-//         return nullptr;
-//     }
-//     table *possibleMerge = r->recentTable->next;
-//     table *unEmptyTable = nullptr;
-//     int index = -1;
-//     int emptyTable = 15;
-//     while (possibleMerge->ID > index && (MAXSIZE - emptyTable) <= num)
-//     {
-//         table *temp = possibleMerge;
-//         int i = 0;
-//         for (; i < num; i++, temp = temp->next)
-//         {
-//             if (!isEmptyTable(temp))
-//             {
-//                 unEmptyTable = temp;
-//                 emptyTable--;
-//                 break;
-//             }
-//         }
-//         if (i == num)
-//         {
-//             mergedTable = possibleMerge;
-//             index = possibleMerge->ID;
-//             possibleMerge = possibleMerge->next;
-//         }
-//         else
-//         {
-//             possibleMerge = unEmptyTable->next;
-//         }
-//     }
 
-//     return mergedTable;
-// }
-table *findNEmptyTables(restaurant *r, int N)
-{
-    table *cur = r->recentTable;
-    table *start = nullptr;
-    int count = 0;
-    int maxID = -1;
-
-    do
-    {
-        if (cur->name == "")
-        {
-            if (count == 0)
-            {
-                start = cur;
-            }
-            count++;
-            if (count == N)
-            {
-                maxID = cur->ID;
-                break;
-            }
-        }
-        else
-        {
-            count = 0;
-            start = nullptr;
-        }
-        cur = cur->next;
-    } while (cur != r->recentTable);
-
-    if (maxID != -1)
-    {
-        // Tìm thấy N bàn trống liên tiếp
-        cur = start;
-        while (cur->ID != maxID)
-        {
-            cur = cur->next;
-        }
-        return start->next;
-    }
-    else
-    {
-        // Không tìm thấy đủ N bàn trống liên tiếp
-        return nullptr;
-    }
-    // return start;
-}
-
-void regm(string input)
+void regm(string input, restaurant *r, DLL *history)
 {
     // int id = getID(input);
     string name = getName(input);
+    cout << name << endl;
 
     int age = getAge(input);
-    int numb = getNum(input);
-    cout << name << " " << age << " number" << numb << endl;
+    if (age < 16)
+        return;
+
+    int num = getNum(input);
+    cout << name << " " << age << " number" << num << endl;
+
+    table *head = r->recentTable->next; //
+    int check = 1;
+    while (head->name != "")
+    {
+        head = head->next; // chạy tới bàn trống đầu tiên
+        if (check > MAXSIZE)
+        {
+            return; // ko ton tai ban trong
+        }
+        check++;
+    }
+    table *tail = head;
+    int cntEmpty = 1;
+    int maxID = head->ID;
+    bool flag = false; // check xem tim ra lien tuc chua
+    table *res = nullptr;
+    if (checkREGM == true)
+        return;
+    for (int cnt = 1; cnt <= 2 * MAXSIZE; cnt++)
+    {
+        if (flag == false)
+        {
+            if (head->name != "")
+            {
+                head = head->next;
+            }
+            else if (tail->next->name == "")
+            {
+                cntEmpty++;
+                if (cntEmpty == num)
+                {
+                    flag = true; // da tim ra 1 day lien tiep
+                    res = head;
+                }
+                tail = tail->next;
+            }
+            else if (tail->next->name != "")
+            {
+                head = head->next;
+                tail = head;
+                cntEmpty = 0;
+            }
+        }
+        else if (flag == true)
+        {
+            // neu da tim thay 1 day lien tiep, tim max id cua head.
+            if (tail->next->name == "" && maxID < head->next->ID)
+            {
+                // tiep tuc mo rong
+                // di chuyen head
+                head = head->next;
+                tail = tail->next;
+                maxID = head->next->ID;
+                res = head;
+            }
+            else if (tail->next->name != "")
+            {
+                flag = false; // tìm tiếp 1 dãy liên tiếp mớiD
+                head = tail->next;
+                tail = head;
+                cntEmpty = 0;
+            }
+        }
+    }
+    // dua raa ket qua la res
+    tail = res;
+
+    if (res != nullptr)
+    {
+        for (int i = 1; i <= num - 1; i++)
+        {
+            tail = tail->next;
+        }
+        res->next = tail->next;
+        tail->next = nullptr;
+        res->age = age;
+        res->name = name;
+        latestTable = res;
+        history->add(res->ID, name, age);
+        checkREGM = true;
+    }
+    else if (res == nullptr)
+    {
+        return;
+    }
     return;
 }
 
@@ -503,24 +551,71 @@ void cle(string input)
 {
     int id = getID(input);
     // cout << "ID to CLE: " << id << endl;
+
     return;
 }
 
 void ps(string input, DLL *History)
 {
+    int numHistory = History->size();
+    cout << numHistory << " customers now\n";
+    //  xu li cai NUM
+
     int num = getNum(input);
-    if (num == -1)
+    if (History->empty())
     {
-        // chỉ có mỗi lệnh PS thôi. ko có [NUM].
-        //
+        cout << "Empty";
+        return;
     }
+
+    if (num == -1 || (num > numHistory && num <= 2 * MAXSIZE))
+    {
+        num = numHistory;
+    }
+
     printReverse(*History, num);
     return;
 }
 
-void pq()
+void pq(string input, DLL *waitList)
 {
+    int numWait = waitList->size();
+    cout << numWait << " is waiting now\n";
+    //  xu li cai NUM
+
+    int num = getNum(input);
+    if (waitList->empty())
+    {
+        cout << "Empty\n";
+        return;
+    }
+    if (num == -1 || (num > numWait && num <= 2 * MAXSIZE))
+    {
+        num = numWait;
+    }
+    printForward(*waitList, num);
     return;
+}
+
+void pt(string input, restaurant *r)
+{
+    int id = latestTable->ID;
+    cout << id;
+    table *tb = r->recentTable->next;
+
+    while (tb->ID != id)
+    {
+        tb = tb->next;
+    }
+    cout << "Table in the restaurant from PT command:\n";
+    for (int i = 0; i < MAXSIZE; i++)
+    {
+        if (tb->age != 0)
+        {
+            cout << tb->ID << "-" << tb->name << endl;
+        }
+        tb = tb->next;
+    }
 }
 void printTable(restaurant *r)
 {
@@ -542,7 +637,8 @@ void printTable(restaurant *r)
 void simulate(string filename, restaurant *r)
 {
     ifstream file(filename);
-
+    DLL waitlist;
+    DLL history;
     if (file.is_open())
     {
         string line;
@@ -555,12 +651,13 @@ void simulate(string filename, restaurant *r)
                 // cout << getName(line) << endl;
                 // cout << getAge(line) << endl;
                 // printTable(*r);
+
                 reg(line, r, &waitlist, &history);
             }
-            // if (filtCommand(line) == "REGM")
-            // {
-            //     regm(line);
-            // }
+            if (filtCommand(line) == "REGM")
+            {
+                regm(line, r, &history);
+            }
             // if (filtCommand(line) == "CLE")
             // {
             //     cle(line);
@@ -568,6 +665,14 @@ void simulate(string filename, restaurant *r)
             if (filtCommand(line) == "PS")
             {
                 ps(line, &history);
+            }
+            if (filtCommand(line) == "PQ")
+            {
+                pq(line, &waitlist);
+            }
+            if (filtCommand(line) == "PT")
+            {
+                pt(line, r);
             }
         }
 
