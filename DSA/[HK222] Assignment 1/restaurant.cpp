@@ -330,7 +330,7 @@ int getAge(string input)
             age = stoi(age_str);
             // cout << "Age " << age << endl;
         }
-        return age;
+        return (age >= 1 && age <= 115) ? age : 0;
     }
     else if (input.substr(0, 4) == "REGM")
     {
@@ -339,8 +339,8 @@ int getAge(string input)
         // pos = input.find(" ", pos + 1);        // find third space
         string ageStr = input.substr(pos + 1); // extract substring after third space
         int age = stoi(ageStr);                // convert string to integer
-        cout << age << endl;                   // output: 112
-        return age;
+        // cout << age << endl;                   // output: 112
+        return (age >= 1 && age <= 115) ? age : 0;
     }
     return 0; // default value
 }
@@ -404,7 +404,12 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
             cout << "The restaurant is full!";
             waitlist->add(id, name, age);
 
-            history->add(id, name, age);
+            //kiem tra lich su xem da co chua
+            DLL::Node *save = new DLL::Node(id, name, age);
+            int found = findNodeIndex(history, save);
+            if (found == -1)
+                history->add(id, name, age);
+            delete save;
         }
     }
     else
@@ -628,7 +633,7 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history)
         int indexTB = findNodeIndex(history, node_cle);
         history->removeAt(indexTB);
         delete node_cle; // memory leak
-        
+
         // vòng for chạy từ id cần clear, đến các giá trị trong ô gộp
         for (int i = 0; i < num_regm; i++)
         {
