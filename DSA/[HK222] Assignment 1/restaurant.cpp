@@ -1,6 +1,8 @@
 #include "main.h"
+#include <unistd.h> // for linux
+
 table *latestTable = nullptr;
-bool checkREGM = false;
+int checkREGM = -1;
 
 class DLL
 {
@@ -142,13 +144,13 @@ public:
     {
         add(ID, name, age);
     }
-    void pop_front()
+    Node *pop_front()
     {
-        removeAt(0);
+        return removeAt(0);
     }
-    void pop_back()
+    Node *pop_back()
     {
-        removeAt(cnt - 1);
+        return removeAt(cnt - 1);
     }
 
     Node *front()
@@ -341,8 +343,8 @@ int getAge(string input)
 }
 // change wait list to queue
 // lưu lại danh sách người đến nhà hàng (kể cả người đợi) vào stack để lấy ra người gần nhất đến nhà hàng
-int maxID = -1;
-int minID = MAXSIZE + 1;
+// int maxID = -1;
+// int minID = MAXSIZE + 1;
 
 void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
 {
@@ -366,7 +368,7 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
     }
 
     // chia hai truong hop, co id va ko co id
-    table *cur = r->recentTable;
+    table *tb = r->recentTable->next;
     // int minID = 100000;
     // int maxID = -1;
     // for (int i = 0; i < MAXSIZE; i++)
@@ -377,12 +379,12 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
     //         maxID = cur->ID;
     //     cur = cur->next;
     // }
-    cout << maxID << " " << minID << " ";
-    table *tb = cur;
-    while (tb->ID != minID)
-    {
-        tb = tb->next;
-    } // tìm đến id nhỏ nhất hiện tại
+    // cout << maxID << " " << minID << " ";
+    // table *tb = cur;
+    // while (tb->ID != minID)
+    // {
+    //     tb = tb->next;
+    // } // tìm đến id nhỏ nhất hiện tại
 
     // truong hop ko co ID`
     if (id == -100)
@@ -425,18 +427,14 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
         //  truong hop full het ban
 
         // table *tb = r->recentTable->next;
-        if ((id > maxID || id < minID))
-        {
-            return;
-        }
-        else
-        {
-            while (tb->ID != id)
-            {
 
-                tb = tb->next;
-            }
+        while (tb->ID != id)
+        {
+            if (tb->ID > id)
+                break;
+            tb = tb->next;
         }
+
         int i = 1;
         while (i <= MAXSIZE)
         {
@@ -491,7 +489,7 @@ void regm(string input, restaurant *r, DLL *history)
     int maxEmptyID = -1;
     bool flag = false; // check xem tim ra lien tuc chua
     table *res = nullptr;
-    if (checkREGM == true)
+    if (checkREGM != -1)
         return;
     // table *past_head = head;
     for (int i = 0; i < 2 * MAXSIZE; i++)
@@ -518,7 +516,7 @@ void regm(string input, restaurant *r, DLL *history)
             }
             else if (tail->next->name != "")
             {
-                head = tail->next->next;
+                head = tail->next;
                 tail = head;
                 cout << tail->next->age << endl;
                 cntEmpty = 1;
@@ -539,7 +537,7 @@ void regm(string input, restaurant *r, DLL *history)
             else if (tail->next->name != "")
             {
                 flag = false; // tìm tiếp 1 dãy liên tiếp mớiD
-                head = tail->next->next;
+                head = tail->next;
                 tail = head;
                 cntEmpty = 1;
             }
@@ -553,22 +551,19 @@ void regm(string input, restaurant *r, DLL *history)
         {
             tail = tail->next;
         }
+        r->recentTable = res;
         res->next = tail->next;
-        // tail->next = nullptr;
         res->age = age;
         res->name = name;
-        latestTable = res;
-        history->add(res->ID, name, age);
-        checkREGM = true;
-        table *cur = r->recentTable;
-        for (int i = 0; i < MAXSIZE; i++)
+
+        table *tmp = r->recentTable;
+        while (tmp->ID < tmp->next->ID)
         {
-            if (cur->ID < minID)
-                minID = cur->ID;
-            if (cur->ID > maxID)
-                maxID = cur->ID;
-            cur = cur->next;
+            r->recentTable = r->recentTable->next;
+            tmp = tmp->next;
         }
+        history->add(res->ID, name, age);
+        checkREGM = res->ID;
     }
     else if (res == nullptr)
     {
@@ -577,15 +572,35 @@ void regm(string input, restaurant *r, DLL *history)
     return;
 }
 
-void cle(string input, restaurant *r)
+void cle(string input, restaurant *r, DLL *waitlist)
 {
     int id = getID(input);
     // cout << "ID to CLE: " << id << endl;
-
+    if (id > MAXSIZE)
+        return;
     table *tbclr = r->recentTable->next;
     while (tbclr->ID != id)
     {
+        if (tbclr->ID > id)
+            return;
         tbclr = tbclr->next; // dich toi vi tri id
+    }
+    if (checkREGM == -1)
+    {
+        if (!waitlist->empty())
+        {
+            DLL::Node *node = waitlist->pop_front();
+            tbclr->age = node->age;
+            tbclr->name = node->name;
+        }
+        else
+        {
+            tbclr->name = "";
+            tbclr->age = 0;
+        }
+    }
+    else
+    {
     }
 
     return;
@@ -683,6 +698,7 @@ void simulate(string filename, restaurant *r)
     if (file.is_open())
     {
         string line;
+        int n = 1;
         while (getline(file, line))
         {
             // cout << "THE COMMAND IS: " << filtCommand(line) << endl;
@@ -715,6 +731,86 @@ void simulate(string filename, restaurant *r)
             {
                 pt(line, r);
             }
+            if (n >= 5)
+            {
+                cout << endl;
+                cout << "--RESTAURANT--" << endl;
+                cout << endl;
+                printTable(r);
+
+                // cout << endl;
+                // cout << "----" << n << "/ " << line << "----" << endl
+                //      << endl;
+
+                // cout << endl;
+                // cout << "NO. LIST: " << listNum << endl
+                //      << endl;
+
+                // if (command == "PS")
+                // {
+                //     cout << "--LIST--" << endl;
+                //     cout << endl;
+                //     List->printFull();
+                //     cout << endl;
+                //     cout << "--ST--" << endl;
+                //     cout << endl;
+                //     st->printFull();
+                // }
+
+                // if (command == "REGM")
+                // {
+                //     cout << "FIRST: " << first << "      LAST: " << last << "     CHECK: " << CheckVIP << "      NUM: " << numVIP << endl;
+                //     cout << endl;
+                //     cout << "--VIP--" << endl;
+                //     cout << endl;
+                //     // table* toPrint = VIP->recentTable;
+                // for (int i = 0; i < 3; i++) {
+                //     cout << toPrint->ID << " " << toPrint->name << " " << toPrint->age << endl;
+                //     toPrint = toPrint->next;
+                // }
+                //     cout << endl;
+                // }
+
+                // cout << endl;
+                // // if (command == "CLE") {
+                // //     cout << endl;
+                // //     cout << VIP->recentTable->ID;
+                // //     cout <<endl;
+                // // }
+                // if (listNum > MAXSIZE || command == "PQ" || command == "SQ")
+                // {
+                //     cout << "--WAIT--" << endl;
+                //     cout << endl;
+                //     cout << "NO. WAIT: " << waitNum << endl
+                //          << endl;
+
+                // table* newTable = wait->recentTable;
+                // for (int i = 0; i < MAXSIZE; i++) {
+                //     cout << newTable->ID << " " << newTable->age << " " << newTable->name << endl;
+                //     newTable = newTable->next;
+                // }
+                //     Wait->printIndex();
+                //     cout << endl
+                //          << endl;
+
+                //     cout << endl
+                //          << "---WAIT_PQ---" << endl
+                //          << endl;
+                //     WaitingPQ->printFull();
+                // }
+
+                // // cout << "--END--";
+                if (filtCommand(line) == "PS" || filtCommand(line) == "PQ" || filtCommand(line) == "SQ" || filtCommand(line) == "PT")
+                {
+                    sleep(10);
+                }
+                else
+                {
+                    sleep(3);
+                }
+                system("clear");
+            }
+            n++;
         }
 
         file.close();
