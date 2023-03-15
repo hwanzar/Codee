@@ -292,6 +292,7 @@ string getName(string input)
     {
         int pos = input.find(" ");
         input = input.substr(pos + 1);
+        pos = input.find(" ");
         // cout << input << endl;
         // input = input.substr(pos + 1);
 
@@ -427,12 +428,16 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
         //  truong hop full het ban
 
         // table *tb = r->recentTable->next;
+        if (id > MAXSIZE)
+            return;
 
+        int cnt = 1;
         while (tb->ID != id)
         {
-            if (tb->ID > id)
+            if (cnt > MAXSIZE)
                 break;
             tb = tb->next;
+            cnt++;
         }
 
         int i = 1;
@@ -579,14 +584,26 @@ void cle(string input, restaurant *r, DLL *waitlist)
     if (id > MAXSIZE)
         return;
     table *tbclr = r->recentTable->next;
-    while (tbclr->ID != id)
+    for (int i = 0; i < MAXSIZE; i++)
     {
-        if (tbclr->ID > id)
-            return;
-        tbclr = tbclr->next; // dich toi vi tri id
+        if (tbclr->ID == id)
+        {
+            break;
+        }
+        tbclr = tbclr->next;
     }
-    if (checkREGM == -1)
+    if (tbclr->ID != id)
+        return;
+
+    if (id == checkREGM)
     {
+        // mở bàn đã gộp
+        // kết nối lại với table* đã tách
+        // kiểm tra hàng đợi.
+    }
+    else
+    {
+        // bàn đơn
         if (!waitlist->empty())
         {
             DLL::Node *node = waitlist->pop_front();
@@ -598,9 +615,6 @@ void cle(string input, restaurant *r, DLL *waitlist)
             tbclr->name = "";
             tbclr->age = 0;
         }
-    }
-    else
-    {
     }
 
     return;
@@ -731,7 +745,7 @@ void simulate(string filename, restaurant *r)
             {
                 pt(line, r);
             }
-            if (n >= 5)
+            if (n >= 7)
             {
                 cout << endl;
                 cout << "--RESTAURANT--" << endl;
