@@ -1,11 +1,30 @@
+REG 10 Gia 100
+REGM g 19 1
+REG 10 Gia 101
+REG 10 Gia 102
+REG 10 Gia 103
+REG 10 Gia 104
+REG 10 Gia 105
+REG 10 Gia 106
+REG 10 Gia 107
+REG 10 Gia 100
+REG 10 Gia 100
+REG 10 Gia 100
+REG 10 Gia 100
+REG Hellooooo 102
 REG 2 Hellooooo 102
-REG 4 Gia 103
+REG 2 Hellooooo 102
+REG 4 Hellooooo 102
+REG 6 Hellooooo 102
+REG 4 Hellooo 102
+REG 9 Hellooooo 102
+REG 7 Gia 103
 REG 6 Gia 104
 REG 10 Gia 105
 REG 2 Gia 106
 REG 3 Gia 111
-REGM g 19 3
 REG 15 Gia 18
 REG 1 Gia 123
 PT
 PS
+PQ

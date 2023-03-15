@@ -479,6 +479,7 @@ void regm(string input, restaurant *r, DLL *history)
     cout << name << " " << age << " number" << num << endl;
 
     table *head = r->recentTable->next; //
+
     int check = 1;
     while (head->name != "")
     {
@@ -507,6 +508,12 @@ void regm(string input, restaurant *r, DLL *history)
                 head = head->next;
                 cntEmpty = 1;
                 tail = head;
+            }
+            else if (cntEmpty == num)
+            {
+                flag = true;
+                res = head;
+                maxEmptyID = head->ID;
             }
             else if (tail->next->name == "")
             {
@@ -550,6 +557,7 @@ void regm(string input, restaurant *r, DLL *history)
     }
     // dua raa ket qua la res
     tail = res;
+
     if (res != nullptr)
     {
         for (int i = 1; i <= num - 1; i++)
@@ -745,7 +753,7 @@ void simulate(string filename, restaurant *r)
             {
                 pt(line, r);
             }
-            if (n >= 7)
+            if (n >= 1)
             {
                 cout << endl;
                 cout << "--RESTAURANT--" << endl;
