@@ -403,6 +403,7 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
             // waitlist->recentTable = waitlist->insert(waitlist->recentTable, -100, name, age);
             cout << "The restaurant is full!";
             waitlist->add(id, name, age);
+
             history->add(id, name, age);
         }
     }
@@ -446,7 +447,11 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
             cout << "The restaurant is full!";
 
             waitlist->add(id, name, age);
-            history->add(id, name, age);
+            DLL::Node *save = new DLL::Node(id, name, age);
+            int found = findNodeIndex(history, save);
+            if (found == -1)
+                history->add(id, name, age);
+            delete save;
         }
     }
 }
@@ -573,7 +578,7 @@ void regm(string input, restaurant *r, DLL *history)
     return;
 }
 
-int findNodeIndex(DLL *history, table *tb)
+int findNodeIndex(DLL *history, DLL::Node *tb)
 {
     DLL::Node *node = history->head;
     int index = 0;
@@ -611,7 +616,6 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history)
 
     else if (tbclr->ID == checkREGM)
     {
-        // mở bàn đã gộp
         // kết nối lại với table* đã tách
         // kiểm tra hàng đợi.
         tbclr->name = "";
@@ -619,24 +623,27 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history)
         tbclr->next = regm_head;
         checkREGM = -1;
         // truy cập vào node đó, xóa giá trị trong history
-        int indexTB = findNodeIndex(history, tbclr);
-        history->removeAt(indexTB);
 
-        //vòng for chạy từ id cần clear, đến các giá trị trong ô gộp
+        DLL::Node *node_cle = new DLL::Node(tbclr->ID, tbclr->name, tbclr->age, nullptr);
+        int indexTB = findNodeIndex(history, node_cle);
+        history->removeAt(indexTB);
+        delete node_cle; // memory leak
+        
+        // vòng for chạy từ id cần clear, đến các giá trị trong ô gộp
         for (int i = 0; i < num_regm; i++)
         {
             if (!waitlist->empty())
             {
                 DLL::Node *node = waitlist->pop_front();
-                table *tb = new table(node->ID, node->name, node->age, nullptr);
+                // table *tb = new table(node->ID, node->name, node->age, nullptr);
 
-                int indexTBQ = findNodeIndex(history, tb);
-                history->removeAt(indexTBQ);// xóa history cái queue
-                
+                // int indexTBQ = findNodeIndex(history, tb);
+                // history->removeAt(indexTBQ);// xóa history cái queue
+
                 string line = "REG ";
-                line = line + to_string(node->ID) + " " + node->name + " " + to_string(node->age);// tạo lại hàm REG
-                reg(line, r, waitlist, history);// REG vào chỗ mới
-                delete tb;//memory leak
+                line = line + to_string(node->ID) + " " + node->name + " " + to_string(node->age); // tạo lại hàm REG
+                reg(line, r, waitlist, history);                                                   // REG vào chỗ mới
+                // delete tb;//memory leak
             }
             tbclr = tbclr->next;
         }
@@ -644,17 +651,17 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history)
     else
     {
         // bàn đơn
-        int indexTB = findNodeIndex(history, tbclr);
+        DLL::Node *node_cle = new DLL::Node(tbclr->ID, tbclr->name, tbclr->age, nullptr);
+        int indexTB = findNodeIndex(history, node_cle);
         history->removeAt(indexTB);
+        delete node_cle; // memory leak
         if (!waitlist->empty())
         {
             DLL::Node *node = waitlist->pop_front();
-            table *tb = new table(node->ID, node->name, node->age, nullptr);
-            int indexTB = findNodeIndex(history, tb);
+
             history->removeAt(indexTB);
             tbclr->age = node->age;
             tbclr->name = node->name;
-            delete tb;
         }
         else
         {
