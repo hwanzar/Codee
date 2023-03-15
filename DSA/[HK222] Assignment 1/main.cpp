@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
         r->recentTable = r->insert(r->recentTable, i, "", 0);
     }
     simulate(fileName, r);
-    cout << endl;
+
     printTable(r);
     delete r;
     return 0;

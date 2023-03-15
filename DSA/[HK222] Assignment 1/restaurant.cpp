@@ -341,6 +341,8 @@ int getAge(string input)
 }
 // change wait list to queue
 // lưu lại danh sách người đến nhà hàng (kể cả người đợi) vào stack để lấy ra người gần nhất đến nhà hàng
+int maxID = -1;
+int minID = MAXSIZE + 1;
 
 void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
 {
@@ -350,6 +352,7 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
 
     // buoc dau tien phai loc ra id, ten, tuoi
     //  getID
+    // neu regm, roi reg
 
     int id = getID(input);
     string name = getName(input);
@@ -364,19 +367,24 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
 
     // chia hai truong hop, co id va ko co id
     table *cur = r->recentTable;
-    int minID = 100000;
-    for (int i = 0; i < MAXSIZE; i++)
-    {
-        if (cur->ID < minID)
-            minID = cur->ID;
-        cur = cur->next;
-    }
+    // int minID = 100000;
+    // int maxID = -1;
+    // for (int i = 0; i < MAXSIZE; i++)
+    // {
+    //     if (cur->ID < minID)
+    //         minID = cur->ID;
+    //     if (cur->ID > maxID)
+    //         maxID = cur->ID;
+    //     cur = cur->next;
+    // }
+    cout << maxID << " " << minID << " ";
     table *tb = cur;
     while (tb->ID != minID)
     {
         tb = tb->next;
-    }
+    } // tìm đến id nhỏ nhất hiện tại
 
+    // truong hop ko co ID`
     if (id == -100)
     {
         // truong hop ko co id
@@ -417,9 +425,17 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
         //  truong hop full het ban
 
         // table *tb = r->recentTable->next;
-        while (tb->ID != id)
+        if ((id > maxID || id < minID))
         {
-            tb = tb->next;
+            return;
+        }
+        else
+        {
+            while (tb->ID != id)
+            {
+
+                tb = tb->next;
+            }
         }
         int i = 1;
         while (i <= MAXSIZE)
@@ -472,19 +488,22 @@ void regm(string input, restaurant *r, DLL *history)
     }
     table *tail = head;
     int cntEmpty = 1;
-    int maxID = -1;
+    int maxEmptyID = -1;
     bool flag = false; // check xem tim ra lien tuc chua
     table *res = nullptr;
     if (checkREGM == true)
         return;
-    table *past_head = head;
+    // table *past_head = head;
     for (int i = 0; i < 2 * MAXSIZE; i++)
+    // while (head != r->recentTable)
     {
         if (flag == false)
         {
             if (head->name != "")
             {
                 head = head->next;
+                cntEmpty = 1;
+                tail = head;
             }
             else if (tail->next->name == "")
             {
@@ -493,41 +512,41 @@ void regm(string input, restaurant *r, DLL *history)
                 {
                     flag = true; // da tim ra 1 day lien tiep
                     res = head;
+                    maxEmptyID = head->ID;
                 }
                 tail = tail->next;
             }
             else if (tail->next->name != "")
             {
-                head = tail->next;
+                head = tail->next->next;
                 tail = head;
                 cout << tail->next->age << endl;
-                cntEmpty = 0;
+                cntEmpty = 1;
             }
         }
         else if (flag == true)
         {
             // neu da tim thay 1 day lien tiep, tim max id cua head.
-            if (tail->next->name == "" && maxID < head->next->ID)
+            if (tail->next->name == "" && maxEmptyID < head->next->ID)
             {
                 // tiep tuc mo rong
                 // di chuyen head
                 head = head->next;
                 tail = tail->next;
-                maxID = head->ID;
+                maxEmptyID = head->ID;
                 res = head;
             }
             else if (tail->next->name != "")
             {
                 flag = false; // tìm tiếp 1 dãy liên tiếp mớiD
-                head = tail->next;
+                head = tail->next->next;
                 tail = head;
-                cntEmpty = 0;
+                cntEmpty = 1;
             }
         }
     }
     // dua raa ket qua la res
     tail = res;
-
     if (res != nullptr)
     {
         for (int i = 1; i <= num - 1; i++)
@@ -535,12 +554,21 @@ void regm(string input, restaurant *r, DLL *history)
             tail = tail->next;
         }
         res->next = tail->next;
-        tail->next = nullptr;
+        // tail->next = nullptr;
         res->age = age;
         res->name = name;
         latestTable = res;
         history->add(res->ID, name, age);
         checkREGM = true;
+        table *cur = r->recentTable;
+        for (int i = 0; i < MAXSIZE; i++)
+        {
+            if (cur->ID < minID)
+                minID = cur->ID;
+            if (cur->ID > maxID)
+                maxID = cur->ID;
+            cur = cur->next;
+        }
     }
     else if (res == nullptr)
     {
@@ -549,10 +577,16 @@ void regm(string input, restaurant *r, DLL *history)
     return;
 }
 
-void cle(string input)
+void cle(string input, restaurant *r)
 {
     int id = getID(input);
     // cout << "ID to CLE: " << id << endl;
+
+    table *tbclr = r->recentTable->next;
+    while (tbclr->ID != id)
+    {
+        tbclr = tbclr->next; // dich toi vi tri id
+    }
 
     return;
 }
@@ -634,6 +668,11 @@ void printTable(restaurant *r)
         cout << "ID: " << cur->ID << ", Name: " << cur->name << ", Age: " << cur->age << endl;
         cur = cur->next;
     } while (cur != r->recentTable->next); // iterate until we reach the starting table again
+    // for (int i = 1; i <= MAXSIZE; i++)
+    // {
+    //     cout << "ID: " << cur->ID << ", Name: " << cur->name << ", Age: " << cur->age << endl;
+    //     cur = cur->next;
+    // }
 }
 
 void simulate(string filename, restaurant *r)
