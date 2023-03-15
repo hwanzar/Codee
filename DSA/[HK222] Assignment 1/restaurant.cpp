@@ -3,13 +3,15 @@
 
 table *latestTable = nullptr;
 int checkREGM = -1;
-
+table *regm_head = nullptr;
+int num_regm = 0;
 class DLL
 {
 public:
     class Node
     {
     public:
+        int idx;
         int ID;
         string name;
         int age;
@@ -370,22 +372,6 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history)
 
     // chia hai truong hop, co id va ko co id
     table *tb = r->recentTable->next;
-    // int minID = 100000;
-    // int maxID = -1;
-    // for (int i = 0; i < MAXSIZE; i++)
-    // {
-    //     if (cur->ID < minID)
-    //         minID = cur->ID;
-    //     if (cur->ID > maxID)
-    //         maxID = cur->ID;
-    //     cur = cur->next;
-    // }
-    // cout << maxID << " " << minID << " ";
-    // table *tb = cur;
-    // while (tb->ID != minID)
-    // {
-    //     tb = tb->next;
-    // } // tìm đến id nhỏ nhất hiện tại
 
     // truong hop ko co ID`
     if (id == -100)
@@ -565,6 +551,7 @@ void regm(string input, restaurant *r, DLL *history)
             tail = tail->next;
         }
         r->recentTable = res;
+        regm_head = res->next;
         res->next = tail->next;
         res->age = age;
         res->name = name;
@@ -577,6 +564,7 @@ void regm(string input, restaurant *r, DLL *history)
         }
         history->add(res->ID, name, age);
         checkREGM = res->ID;
+        num_regm = num;
     }
     else if (res == nullptr)
     {
@@ -585,38 +573,88 @@ void regm(string input, restaurant *r, DLL *history)
     return;
 }
 
-void cle(string input, restaurant *r, DLL *waitlist)
+int findNodeIndex(DLL *history, table *tb)
+{
+    DLL::Node *node = history->head;
+    int index = 0;
+    while (node != nullptr)
+    {
+        if (node->name == tb->name && node->age == tb->age)
+        {
+            return index;
+        }
+        node = node->next;
+        index++;
+    }
+    return -1;
+}
+
+void cle(string input, restaurant *r, DLL *waitlist, DLL *history)
 {
     int id = getID(input);
     // cout << "ID to CLE: " << id << endl;
     if (id > MAXSIZE)
         return;
     table *tbclr = r->recentTable->next;
+
     for (int i = 0; i < MAXSIZE; i++)
     {
         if (tbclr->ID == id)
         {
             break;
         }
-        tbclr = tbclr->next;
+        tbclr = tbclr->next; // đưa đến id cần tìm
+        // nếu ID khác id cần tìm thì coi nhu ko tồn tại
     }
-    if (tbclr->ID != id)
+    if (tbclr->ID != id || tbclr->name == "")
         return;
 
-    if (id == checkREGM)
+    else if (tbclr->ID == checkREGM)
     {
         // mở bàn đã gộp
         // kết nối lại với table* đã tách
         // kiểm tra hàng đợi.
+        tbclr->name = "";
+        tbclr->age = 0;
+        tbclr->next = regm_head;
+        checkREGM = -1;
+        // truy cập vào node đó, xóa giá trị trong history
+        int indexTB = findNodeIndex(history, tbclr);
+        history->removeAt(indexTB);
+
+        //vòng for chạy từ id cần clear, đến các giá trị trong ô gộp
+        for (int i = 0; i < num_regm; i++)
+        {
+            if (!waitlist->empty())
+            {
+                DLL::Node *node = waitlist->pop_front();
+                table *tb = new table(node->ID, node->name, node->age, nullptr);
+
+                int indexTBQ = findNodeIndex(history, tb);
+                history->removeAt(indexTBQ);// xóa history cái queue
+                
+                string line = "REG ";
+                line = line + to_string(node->ID) + " " + node->name + " " + to_string(node->age);// tạo lại hàm REG
+                reg(line, r, waitlist, history);// REG vào chỗ mới
+                delete tb;//memory leak
+            }
+            tbclr = tbclr->next;
+        }
     }
     else
     {
         // bàn đơn
+        int indexTB = findNodeIndex(history, tbclr);
+        history->removeAt(indexTB);
         if (!waitlist->empty())
         {
             DLL::Node *node = waitlist->pop_front();
+            table *tb = new table(node->ID, node->name, node->age, nullptr);
+            int indexTB = findNodeIndex(history, tb);
+            history->removeAt(indexTB);
             tbclr->age = node->age;
             tbclr->name = node->name;
+            delete tb;
         }
         else
         {
@@ -690,6 +728,35 @@ void pt(string input, restaurant *r)
         tb = tb->next;
     }
 }
+
+DLL *getIdxDLL(DLL *dll)
+{
+    DLL::Node *cur = dll->head;
+    for (int i = 0; i < dll->size(); i++)
+    {
+        cur->idx = i;
+        cur = cur->next;
+    }
+    return dll;
+}
+void sq(string input, DLL *waitlist)
+{
+    int num = getNum(input);
+
+    int numQ = waitlist->size();
+    DLL *waitQueue = getIdxDLL(waitlist);
+    if (waitlist->size() == 0)
+    {
+        cout << "Empty\n";
+        return;
+    }
+
+    if (numQ < num && num < MAXSIZE)
+    {
+        num = numQ;
+    }
+}
+
 void printTable(restaurant *r)
 {
     if (r->recentTable == nullptr)

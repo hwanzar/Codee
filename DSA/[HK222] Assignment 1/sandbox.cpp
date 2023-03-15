@@ -10,12 +10,17 @@ using namespace std;
 
 using namespace std;
 
+table *latestTable = nullptr;
+int checkREGM = -1;
+table *regm_head = nullptr;
+int num_regm = 0;
 class DLL
 {
 public:
     class Node
     {
     public:
+        int idx;
         int ID;
         string name;
         int age;
@@ -150,13 +155,13 @@ public:
     {
         add(ID, name, age);
     }
-    void pop_front()
+    Node *pop_front()
     {
-        removeAt(0);
+        return removeAt(0);
     }
-    void pop_back()
+    Node *pop_back()
     {
-        removeAt(cnt - 1);
+        return removeAt(cnt - 1);
     }
 
     Node *front()
@@ -176,21 +181,23 @@ public:
         return tail;
     }
 };
+
 void printForward(DLL &dll, int index)
 {
     if (dll.empty())
     {
-        cout << "Deque is empty" << endl;
+        cout << "Empty\n";
         return;
     }
-    if (index < 0 || index >= dll.size())
+    if (index < 0 || index > dll.size())
     {
         throw out_of_range("Index out of range");
     }
     DLL::Node *cur = dll.head;
-    for (int i = 0; i <= index; i++)
+    for (int i = 0; i < index; i++)
     {
-        cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        // cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        cout << cur->idx << cur->name << "\n";
         cur = cur->next;
     }
 }
@@ -199,21 +206,54 @@ void printReverse(DLL &dll, int index)
 {
     if (dll.empty())
     {
-        cout << "Deque is empty" << endl;
+        cout << "Empty\n";
         return;
     }
-    if (index < 0 || index >= dll.size())
+    if (index < 0 || index > dll.size())
     {
         throw out_of_range("Index out of range");
     }
     DLL::Node *cur = dll.tail;
-    for (int i = dll.size() - 1; i >= index; i--)
+    for (int i = dll.size() - 1; i >= dll.size() - index; i--)
     {
-        cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        // cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
+        cout << cur->idx << cur->name << "\n";
         cur = cur->prev;
     }
 }
 
+DLL getIdxDLL(DLL *dll)
+{
+    DLL::Node *cur = dll->head;
+    for (int i = 0; i < dll->size(); i++)
+    {
+        cur->idx = i;
+        cur = cur->next;
+    }
+    return *dll;
+}
+
+int main()
+{
+    DLL *dll = new DLL();
+    dll->add(1, "Alice", 20);
+    dll->add(2, "Bob", 25);
+    dll->add(3, "Charlie", 30);
+    dll->add(4, "David", 35);
+    dll->add(5, "Eva", 40);
+    dll->removeAt(2);
+    cout << "Printing DLL from head to index:" << endl;
+
+    DLL newDLL = getIdxDLL(dll);
+    printForward(*dll, 3);
+
+    // cout << endl;
+
+    cout << "Printing DLL in reverse from tail to index:" << endl;
+    printForward(newDLL, 3);
+
+    return 0;
+}
 string getFirstWord(string input)
 {
     // string command;
@@ -278,36 +318,16 @@ int getNum(string input)
     }
     return num;
 }
-int main()
-{
-    string input = "REGM Gia 18 2";
-    string firstWord = getFirstWord(input);
-    cout << "First word: " << firstWord << endl;
-    cout << firstWord.length() << endl;
-
-    cout << endl;
-    cout << "DEBUG\n\n";
-    // cout << "ID: " << getID(input) << endl;
-    cout << getNum(input) << endl;
-    return 0;
-}
-
 // int main()
 // {
-//     // DLL dll;
-//     // dll.add(1, "Alice", 20);
-//     // dll.add(2, "Bob", 25);
-//     // dll.add(3, "Charlie", 30);
-//     // dll.add(4, "David", 35);
-//     // dll.add(5, "Eva", 40);
+//     string input = "REGM Gia 18 2";
+//     string firstWord = getFirstWord(input);
+//     cout << "First word: " << firstWord << endl;
+//     cout << firstWord.length() << endl;
 
-//     // cout << "Printing DLL from head to index:" << endl;
-//     // printForward(dll, 3);
-
-//     // cout << endl;
-
-//     // cout << "Printing DLL in reverse from tail to index:" << endl;
-//     // printReverse(dll, 2);
-
+//     cout << endl;
+//     cout << "DEBUG\n\n";
+//     // cout << "ID: " << getID(input) << endl;
+//     cout << getNum(input) << endl;
 //     return 0;
 // }
