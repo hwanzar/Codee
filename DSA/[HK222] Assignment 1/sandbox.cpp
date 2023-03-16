@@ -26,7 +26,15 @@ public:
         int age;
         Node *prev;
         Node *next;
-        Node(int ID = 0, string name = "", int age = 0, Node *next = nullptr, Node *prev = nullptr) : ID(ID), name(name), age(age), next(next), prev(prev) {}
+        Node(int ID = 0, string name = "", int age = 0, Node *next = nullptr, Node *prev = nullptr) : ID(ID), name(name), age(age), next(next), prev(prev), idx(1) {}
+
+        Node()
+        {
+            idx = 1;
+            ID = 0;
+            name = "";
+            age = 0;
+        }
     };
 
 public:
@@ -129,7 +137,14 @@ public:
             cur = cur->next;
         }
         // now delete
-        if (prev == nullptr)
+
+        if (head->next == nullptr)
+        {
+            head->prev = nullptr;
+            head = nullptr;
+            tail = nullptr;
+        }
+        else if (prev == nullptr)
         {
             head = head->next;
             head->prev = nullptr;
@@ -222,38 +237,18 @@ void printReverse(DLL &dll, int index)
     }
 }
 
-DLL getIdxDLL(DLL *dll)
+DLL *getIdxDLL(DLL *dll)
 {
+
     DLL::Node *cur = dll->head;
     for (int i = 0; i < dll->size(); i++)
     {
         cur->idx = i;
         cur = cur->next;
     }
-    return *dll;
+    return dll;
 }
 
-int main()
-{
-    DLL *dll = new DLL();
-    dll->add(1, "Alice", 20);
-    dll->add(2, "Bob", 25);
-    dll->add(3, "Charlie", 30);
-    dll->add(4, "David", 35);
-    dll->add(5, "Eva", 40);
-    dll->removeAt(2);
-    cout << "Printing DLL from head to index:" << endl;
-
-    DLL newDLL = getIdxDLL(dll);
-    printForward(*dll, 3);
-
-    // cout << endl;
-
-    cout << "Printing DLL in reverse from tail to index:" << endl;
-    printForward(newDLL, 3);
-
-    return 0;
-}
 string getFirstWord(string input)
 {
     // string command;
@@ -331,3 +326,89 @@ int getNum(string input)
 //     cout << getNum(input) << endl;
 //     return 0;
 // }
+
+void sq()
+{
+    if (sizeQueue == 0)
+    {
+        cout << "Empty\n";
+        return;
+    }
+    int sortNum = (num > sizeQueue && num <= MAXSIZE) ? sizeQueue : num;
+    int findMax = -1;
+    // create a temporary queue:
+    restaurant *tempQueue = new restaurant();
+    int sizeTempQueue = 0;
+    for (int i = 0; i < sortNum; i++)
+    {
+        if (queue->recentTable != nullptr)
+        {
+            // tim max
+            // get the top of the queue.
+            table *first = queue->recentTable->next;
+            table *maxCustomer = first;
+            // get the max age of curr queue.
+            do
+            {
+                if (first->age > findMax)
+                {
+                    findMax = first->age;
+                    maxCustomer = first;
+                }
+                first = first->next;
+            } while (first != queue->recentTable->next && first != nullptr);
+
+            // delete the customer whose age is max
+            maxCustomer = deleteNode(queue, maxCustomer->name, maxCustomer->age);
+            // add him to the tempQueue.
+            if (maxCustomer != nullptr)
+            {
+                addToLast(tempQueue, maxCustomer->name, maxCustomer->age, maxCustomer->ID);
+                findMax = -1;
+                sizeTempQueue++;
+                sizeQueue--;
+            }
+        }
+    }
+    if (queue->recentTable == nullptr)
+    {
+        queue = tempQueue;
+        sizeQueue += sizeTempQueue;
+        PQ_command(MAXSIZE);
+        return;
+    }
+
+    if (tempQueue->recentTable != nullptr)
+    {
+        table *topQueue = queue->recentTable->next;
+        queue->recentTable->next = tempQueue->recentTable->next;
+        tempQueue->recentTable->next = topQueue;
+        sizeQueue += sizeTempQueue;
+    }
+    PQ_command(MAXSIZE);
+}
+
+int main()
+{
+    DLL *dll = new DLL();
+    dll->add(1, "Alice", 20);
+    dll->add(3, "Bob", 20);
+    dll->add(2, "Diva", 20);
+    dll->add(4, "Davisd", 20);
+    dll->add(5, "Lna0", 20);
+    dll->removeAt(0);
+    cout << "Printing DLL from head to index:" << endl;
+
+    DLL *dll2 = getIdxDLL(dll);
+    printForward(*dll, 4);
+    // *dll2 = getIdxDLL(dll);
+    cout << endl;
+
+    // cout << "Printing DLL in reverse from tail to index:" << endl;
+    dll2->removeAt(1);
+    printForward(*dll2, 3);
+    string line = "REG ";
+    line = line + to_string(1) + " " + "Gia" + " " + to_string(19);
+    cout << line;
+    return 0;
+}
