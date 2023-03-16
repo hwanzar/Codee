@@ -1061,6 +1061,7 @@ void simulate(string filename, restaurant *r)
     delete waitlist;
     delete history;
     delete Squeue;
+    // // delete r;
     // delete latestTable;
     // delete regm_head;
 }
