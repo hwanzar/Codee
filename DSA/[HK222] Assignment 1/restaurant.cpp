@@ -293,7 +293,8 @@ void printForward(DLL &dll, int index)
     for (int i = 0; i < index; i++)
     {
         // cout << i << ": " << cur->ID << " " << cur->name << " " << cur->age << endl;
-        cout << cur->idx << " *** " << cur->name << "\n";
+        // cout << cur->idx << " *** " << cur->name << "\n";
+        cout << cur->name << "\n";
         cur = cur->next;
     }
 }
@@ -573,7 +574,7 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
             waitlist->add(id, name, age);
             Squeue->add(sort_index, id, name, age);
             sort_index++;
-            cout << "index ** " << sort_index << endl;
+            // cout << "index ** " << sort_index << endl;
             DLL::Node *save = new DLL::Node(id, name, age);
             int found = findNodeIndex(history, save);
             if (found == -1)
@@ -710,7 +711,7 @@ void regm(string input, restaurant *r, DLL *history)
 void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
 {
     int id = getID(input);
-    cout << "ID to CLE: " << id << endl;
+    // cout << "ID to CLE: " << id << endl;
     if (id > MAXSIZE)
         return;
     table *tbclr = r->recentTable->next;
@@ -741,6 +742,7 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
         tbclr->name = "";
         tbclr->age = 0;
         tbclr->next = regm_head;
+
         checkREGM = -1;
 
         // vòng for chạy từ id cần clear, đến các giá trị trong ô gộp
@@ -804,7 +806,7 @@ void ps(string input, DLL *History)
     int num = getNum(input);
     if (History->empty())
     {
-        cout << "Empty";
+        cout << "Empty\n";
         return;
     }
 
@@ -840,7 +842,7 @@ void pq(string input, DLL *waitList)
 void pt(string input, restaurant *r)
 {
     int id = latestTable->ID;
-    // cout << id;
+    // cout << id << endl;
     table *tb = r->recentTable->next;
 
     while (tb->ID != id)
@@ -848,7 +850,18 @@ void pt(string input, restaurant *r)
         tb = tb->next;
     }
     // cout << "Table in the restaurant from PT command:\n";
-    for (int i = 0; i < MAXSIZE; i++)
+    int size;
+    if (checkREGM != -1)
+    {
+        // co regm
+        size = MAXSIZE - num_regm + 1;
+    }
+    else
+    {
+        size = MAXSIZE;
+    }
+
+    for (int i = 0; i < size; i++)
     {
         if (tb->age != 0)
         {
@@ -856,17 +869,6 @@ void pt(string input, restaurant *r)
         }
         tb = tb->next;
     }
-}
-
-DLL *getIdxDLL(DLL *dll)
-{
-    DLL::Node *cur = dll->head;
-    for (int i = 0; i < dll->size(); i++)
-    {
-        cur->idx = i;
-        cur = cur->next;
-    }
-    return dll;
 }
 
 void sq(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
@@ -952,7 +954,7 @@ void sq(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
         if (num == 0)
             break;
     }
-        
+
     DLL::Node *p = Squeue->head;
     // Node *newTable = Wait->head;
     for (int i = 0; i < savedNum; i++)
