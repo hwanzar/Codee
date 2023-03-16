@@ -313,6 +313,47 @@ int getNum(string input)
     }
     return num;
 }
+string getName(string input)
+{
+    // int pos;
+    // cout << input << endl;
+    if (input.substr(0, 4) == "REG ")
+    {
+        size_t pos = input.find(" ");
+        if (countSpaces(input) == 3)
+        {
+            // truong hop ko co id
+            input = input.substr(pos + 1);
+            // cout << id << " " << input << endl;
+            pos = input.find(" ");
+            input = input.substr(pos + 1);
+            pos = input.find(" ");
+            input = input.substr(0, pos);
+        }
+        else
+        {
+            input = input.substr(pos + 1);
+            // cout << input << endl;
+            pos = input.find(" ");
+            // input = input.substr(pos + 1);
+            // pos = input.find(" ");
+            input = input.substr(0, pos);
+        }
+    }
+    if (input.substr(0, 4) == "REGM")
+    {
+        int pos = input.find(" ");
+        input = input.substr(pos + 1);
+        pos = input.find(" ");
+        // cout << input << endl;
+        // input = input.substr(pos + 1);
+
+        input = input.substr(0, pos);
+    }
+
+    string name = input;
+    return name;
+}
 // int main()
 // {
 //     string input = "REGM Gia 18 2";
@@ -327,88 +368,30 @@ int getNum(string input)
 //     return 0;
 // }
 
-void sq()
-{
-    if (sizeQueue == 0)
-    {
-        cout << "Empty\n";
-        return;
-    }
-    int sortNum = (num > sizeQueue && num <= MAXSIZE) ? sizeQueue : num;
-    int findMax = -1;
-    // create a temporary queue:
-    restaurant *tempQueue = new restaurant();
-    int sizeTempQueue = 0;
-    for (int i = 0; i < sortNum; i++)
-    {
-        if (queue->recentTable != nullptr)
-        {
-            // tim max
-            // get the top of the queue.
-            table *first = queue->recentTable->next;
-            table *maxCustomer = first;
-            // get the max age of curr queue.
-            do
-            {
-                if (first->age > findMax)
-                {
-                    findMax = first->age;
-                    maxCustomer = first;
-                }
-                first = first->next;
-            } while (first != queue->recentTable->next && first != nullptr);
-
-            // delete the customer whose age is max
-            maxCustomer = deleteNode(queue, maxCustomer->name, maxCustomer->age);
-            // add him to the tempQueue.
-            if (maxCustomer != nullptr)
-            {
-                addToLast(tempQueue, maxCustomer->name, maxCustomer->age, maxCustomer->ID);
-                findMax = -1;
-                sizeTempQueue++;
-                sizeQueue--;
-            }
-        }
-    }
-    if (queue->recentTable == nullptr)
-    {
-        queue = tempQueue;
-        sizeQueue += sizeTempQueue;
-        PQ_command(MAXSIZE);
-        return;
-    }
-
-    if (tempQueue->recentTable != nullptr)
-    {
-        table *topQueue = queue->recentTable->next;
-        queue->recentTable->next = tempQueue->recentTable->next;
-        tempQueue->recentTable->next = topQueue;
-        sizeQueue += sizeTempQueue;
-    }
-    PQ_command(MAXSIZE);
-}
-
 int main()
 {
-    DLL *dll = new DLL();
-    dll->add(1, "Alice", 20);
-    dll->add(3, "Bob", 20);
-    dll->add(2, "Diva", 20);
-    dll->add(4, "Davisd", 20);
-    dll->add(5, "Lna0", 20);
-    dll->removeAt(0);
-    cout << "Printing DLL from head to index:" << endl;
+    // DLL *dll = new DLL();
+    // dll->add(1, "Alice", 20);
+    // dll->add(3, "Bob", 20);
+    // dll->add(2, "Diva", 20);
+    // dll->add(4, "Davisd", 20);
+    // dll->add(5, "Lna0", 20);
+    // dll->removeAt(0);
+    // cout << "Printing DLL from head to index:" << endl;
 
-    DLL *dll2 = getIdxDLL(dll);
-    printForward(*dll, 4);
-    // *dll2 = getIdxDLL(dll);
-    cout << endl;
+    // DLL *dll2 = getIdxDLL(dll);
+    // printForward(*dll, 4);
+    // // *dll2 = getIdxDLL(dll);
+    // cout << endl;
 
-    // cout << "Printing DLL in reverse from tail to index:" << endl;
-    dll2->removeAt(1);
-    printForward(*dll2, 3);
-    string line = "REG ";
-    line = line + to_string(1) + " " + "Gia" + " " + to_string(19);
-    cout << line;
+    // // cout << "Printing DLL in reverse from tail to index:" << endl;
+    // dll2->removeAt(1);
+    // printForward(*dll2, 3);
+    // string line = "REG ";
+    // line = line + to_string(1) + " " + "Gia" + " " + to_string(19);
+    // cout << line;
+    string line = "REGM 5 105 3";
+    cout << getName(line) << endl;
+    // cout << getID(line) << endl;
     return 0;
 }

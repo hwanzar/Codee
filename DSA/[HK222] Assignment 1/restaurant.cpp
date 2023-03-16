@@ -1,5 +1,5 @@
 #include "main.h"
-
+#include <unistd.h>
 table *latestTable = nullptr;
 int checkREGM = -1;
 table *regm_head = nullptr;
@@ -30,6 +30,11 @@ public:
             this->name = name;
             this->age = age;
         }
+        Node()
+        {
+            this->next = nullptr;
+            this->prev = nullptr;
+        }
     };
 
 public:
@@ -40,7 +45,7 @@ public:
     DLL() : head(NULL), tail(NULL), cnt(0) {}
     ~DLL()
     {
-        clear();
+        this->clear();
     }
 
     // void add(int ID, string name, int age)
@@ -212,7 +217,10 @@ public:
             (cur->next)->prev = prev;
         }
         cnt--;
-        return cur;
+        Node *curDel = cur;
+        // delete cur;
+        // delete prev;
+        return curDel;
     }
     void removeItem(string name, int age)
     {
@@ -377,12 +385,14 @@ string getName(string input)
     // cout << input << endl;
     if (input.substr(0, 4) == "REG ")
     {
-        int id = getID(input);
         size_t pos = input.find(" ");
-        if (id < 0)
+        if (countSpaces(input) == 3)
         {
+            // truong hop ko co id
             input = input.substr(pos + 1);
             // cout << id << " " << input << endl;
+            pos = input.find(" ");
+            input = input.substr(pos + 1);
             pos = input.find(" ");
             input = input.substr(0, pos);
         }
@@ -391,8 +401,8 @@ string getName(string input)
             input = input.substr(pos + 1);
             // cout << input << endl;
             pos = input.find(" ");
-            input = input.substr(pos + 1);
-            pos = input.find(" ");
+            // input = input.substr(pos + 1);
+            // pos = input.find(" ");
             input = input.substr(0, pos);
         }
     }
@@ -464,6 +474,7 @@ int findNodeIndex(DLL *history, DLL::Node *tb)
         node = node->next;
         index++;
     }
+    delete node;
     return -1;
 }
 
@@ -523,7 +534,7 @@ void reg(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
             waitlist->add(id, name, age);
             Squeue->add(sort_index, id, name, age);
             sort_index++;
-            cout << "index ** " << sort_index << endl;
+            // cout << "index ** " << sort_index << endl;
             // kiem tra lich su xem da co chua
             DLL::Node *save = new DLL::Node(id, name, age);
             int found = findNodeIndex(history, save);
@@ -734,11 +745,12 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
         // kiểm tra hàng đợi.
         // truy cập vào node đó, xóa giá trị trong history
 
-        // DLL::Node *node_cle = new DLL::Node(tbclr->ID, tbclr->name, tbclr->age, nullptr);
+        DLL::Node *node_cle = new DLL::Node(tbclr->ID, tbclr->name, tbclr->age);
         // int indexTB = findNodeIndex(history, node_cle);
         // // cout << indexTB << "aaaaa" << endl;
         // history->removeAt(indexTB);
-        // delete node_cle; // memory leak
+        history->removeItem(tbclr->name, tbclr->age);
+        delete node_cle; // memory leak
         tbclr->name = "";
         tbclr->age = 0;
         tbclr->next = regm_head;
@@ -762,19 +774,22 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
                 // cout << line << endl;
                 reg(line, r, waitlist, history, Squeue); // REG vào chỗ mới
                 // delete tb;//memory leak
+                delete node;
             }
             tbclr = tbclr->next;
         }
+        // delete node_cle;
     }
     else
     {
         // bàn đơn
-        DLL::Node *node_cle = new DLL::Node(tbclr->ID, tbclr->name, tbclr->age, nullptr);
-        int indexTB = findNodeIndex(history, node_cle);
-        // cout << indexTB << "debug **" << endl;
-        // printForward(*history, 1);
-        history->removeAt(indexTB);
-        delete node_cle; // memory leak
+        // DLL::Node *node_cle = new DLL::Node(tbclr->ID, tbclr->name, tbclr->age, nullptr);
+        // int indexTB = findNodeIndex(history, node_cle);
+        // // cout << indexTB << "debug **" << endl;
+        // // printForward(*history, 1);
+        // history->removeAt(indexTB);
+        // delete node_cle; // memory leak
+        history->removeItem(tbclr->name, tbclr->age);
         if (!waitlist->empty())
         {
             DLL::Node *node = Squeue->pop_front();
@@ -784,6 +799,7 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
             tbclr->ID = id;
             tbclr->name = node->name;
             latestTable = tbclr;
+            delete node;
         }
         else
         {
@@ -792,6 +808,7 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
             tbclr->age = 0;
             latestTable = tbclr;
         }
+        // delete node_cle;
     }
 
     return;
@@ -996,7 +1013,7 @@ void simulate(string filename, restaurant *r)
     if (file.is_open())
     {
         string line;
-        // int n = 1;
+        int n = 1;
         while (getline(file, line))
         {
             // cout << "THE COMMAND IS: " << filtCommand(line) << endl;
@@ -1028,9 +1045,9 @@ void simulate(string filename, restaurant *r)
             {
                 sq(line, r, waitlist, history, Squeue);
             }
-            // if (n >= 1)
+            // if (n >= 22)
             // {
-            //     cout << filtCommand(line) << endl;
+            //     cout << line << endl;
             //     cout << endl;
             //     cout << "--RESTAURANT--" << endl;
             //     cout << endl;
@@ -1042,7 +1059,7 @@ void simulate(string filename, restaurant *r)
             //     }
             //     else
             //     {
-            //         sleep(3);
+            //         sleep(4);
             //     }
             //     system("clear");
             // }
