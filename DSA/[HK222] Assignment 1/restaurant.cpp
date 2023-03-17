@@ -180,12 +180,12 @@ public:
         tail = nullptr;
         cnt = 0;
     }
-    Node *removeAt(int index)
+    void removeAt(int index)
     {
-        if (cnt == 0 || index < 0 || index >= cnt)
-        {
-            throw std::out_of_range("Invalid removee at");
-        }
+        // if (cnt == 0 || index < 0 || index >= cnt)
+        // {
+        //     throw std::out_of_range("Invalid removee at");
+        // }
         Node *cur = head;
         Node *prev = nullptr;
 
@@ -217,10 +217,11 @@ public:
             (cur->next)->prev = prev;
         }
         cnt--;
-        Node *curDel = cur;
-        // delete cur;
+        // Node *curDel = cur;
+        delete cur;
+        return;
         // delete prev;
-        return curDel;
+        // return curDel;
     }
     void removeItem(string name, int age)
     {
@@ -232,11 +233,11 @@ public:
                 // Remove the current node
                 if (cur == head)
                 {
-                    pop_front();
+                    removeAt(0);
                 }
                 else if (cur == tail)
                 {
-                    pop_back();
+                    removeAt(cnt - 1);
                 }
                 else
                 {
@@ -249,7 +250,7 @@ public:
             }
             cur = cur->next;
         }
-        throw out_of_range("Item not found");
+        return;
     }
     void push_front(int ID, string name, int age)
     {
@@ -259,13 +260,13 @@ public:
     {
         add(ID, name, age);
     }
-    Node *pop_front()
+    void pop_front()
     {
-        return removeAt(0);
+        removeAt(0);
     }
-    Node *pop_back()
+    void pop_back()
     {
-        return removeAt(cnt - 1);
+        removeAt(cnt - 1);
     }
 
     Node *front()
@@ -376,7 +377,7 @@ int getID(string input)
     }
     else
     {
-        return -100; // not a valid command, return -100
+        return -100; // not a valid command
     }
 }
 string getName(string input)
@@ -762,7 +763,8 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
         {
             if (!Squeue->empty())
             {
-                DLL::Node *node = Squeue->pop_front();
+                DLL::Node *node = Squeue->front();
+                Squeue->pop_front();
                 waitlist->removeItem(node->name, node->age);
                 // table *tb = new table(node->ID, node->name, node->age, nullptr);
 
@@ -774,7 +776,7 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
                 // cout << line << endl;
                 reg(line, r, waitlist, history, Squeue); // REG vào chỗ mới
                 // delete tb;//memory leak
-                delete node;
+                // delete node;
             }
             tbclr = tbclr->next;
         }
@@ -792,14 +794,15 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
         history->removeItem(tbclr->name, tbclr->age);
         if (!waitlist->empty())
         {
-            DLL::Node *node = Squeue->pop_front();
+            DLL::Node *node = Squeue->front();
+            Squeue->pop_front();
             waitlist->removeItem(node->name, node->age);
             // history->removeAt(indexTB);
             tbclr->age = node->age;
             tbclr->ID = id;
             tbclr->name = node->name;
             latestTable = tbclr;
-            delete node;
+            // delete node;
         }
         else
         {
