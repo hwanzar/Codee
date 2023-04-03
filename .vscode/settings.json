@@ -121,5 +121,7 @@
     "**/.*/**",
     "**/.vscode",
     "**/.vscode/**"
-  ]
+  ],
+  "markdown-preview-github-styles.colorTheme": "dark",
+  // "markdown.styles": ["Style.css"]
 }

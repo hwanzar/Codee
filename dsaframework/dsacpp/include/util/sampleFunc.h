@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   sampleFunc.h
  * Author: LTSACH
  *
@@ -19,78 +19,103 @@
 #include <sstream>
 using namespace std;
 
-#include "util/Point.h"
-#include "util/ArrayLib.h"
+#include "Point.h"
+#include "ArrayLib.h"
 
+int minHeapComparator(int &a, int &b)
+{
+    if (a < b)
+        return -1;
+    else if (a > b)
+        return +1;
+    else
+        return 0;
+}
+int maxHeapComparator(int &a, int &b)
+{
+    if (a < b)
+        return +1;
+    else if (a > b)
+        return -1;
+    else
+        return 0;
+}
 
-
-int minHeapComparator(int& a, int& b){
-    if (a < b) return -1;
-    else if(a > b) return +1;
-    else return 0;
+int minHeapComparator(Point &a, Point &b)
+{
+    float ra = sqrt(a.getX() * a.getX() + a.getY() * a.getY());
+    float rb = sqrt(b.getX() * b.getX() + b.getY() * b.getY());
+    if (ra < rb)
+        return -1;
+    else if (ra > rb)
+        return +1;
+    else
+        return 0;
 }
-int maxHeapComparator(int& a, int& b){
-    if (a < b) return +1;
-    else if(a > b) return -1;
-    else return 0;
+int maxHeapComparator(Point &a, Point &b)
+{
+    float ra = sqrt(a.getX() * a.getX() + a.getY() * a.getY());
+    float rb = sqrt(b.getX() * b.getX() + b.getY() * b.getY());
+    if (ra < rb)
+        return +1;
+    else if (ra > rb)
+        return -1;
+    else
+        return 0;
 }
-
-int minHeapComparator(Point& a, Point& b){
-    float ra = sqrt(a.getX()*a.getX() + a.getY()*a.getY());
-    float rb = sqrt(b.getX()*b.getX() + b.getY()*b.getY());
-    if (ra < rb) return -1;
-    else if(ra > rb) return +1;
-    else return 0;
+int minHeapComparator(Point *&a, Point *&b)
+{
+    float ra = sqrt(a->getX() * a->getX() + a->getY() * a->getY());
+    float rb = sqrt(b->getX() * b->getX() + b->getY() * b->getY());
+    if (ra < rb)
+        return -1;
+    else if (ra > rb)
+        return +1;
+    else
+        return 0;
 }
-int maxHeapComparator(Point& a, Point& b){
-    float ra = sqrt(a.getX()*a.getX() + a.getY()*a.getY());
-    float rb = sqrt(b.getX()*b.getX() + b.getY()*b.getY());
-    if (ra < rb) return +1;
-    else if(ra > rb) return -1;
-    else return 0;
-}
-int minHeapComparator(Point*& a, Point*& b){
-    float ra = sqrt(a->getX()*a->getX() + a->getY()*a->getY());
-    float rb = sqrt(b->getX()*b->getX() + b->getY()*b->getY());
-    if (ra < rb) return -1;
-    else if(ra > rb) return +1;
-    else return 0;
-}
-int maxHeapComparator(Point*& a, Point*& b){
-    float ra = sqrt(a->getX()*a->getX() + a->getY()*a->getY());
-    float rb = sqrt(b->getX()*b->getX() + b->getY()*b->getY());
-    if (ra < rb) return +1;
-    else if(ra > rb) return -1;
-    else return 0;
+int maxHeapComparator(Point *&a, Point *&b)
+{
+    float ra = sqrt(a->getX() * a->getX() + a->getY() * a->getY());
+    float rb = sqrt(b->getX() * b->getX() + b->getY() * b->getY());
+    if (ra < rb)
+        return +1;
+    else if (ra > rb)
+        return -1;
+    else
+        return 0;
 }
 ////////////////////////////////////////////////////////////
-string point2str(Point& point){
+string point2str(Point &point)
+{
     stringstream os;
-    os  << "("  << point.getX() 
-                << ", "
-                << point.getY()
-        << ")";
+    os << "(" << point.getX()
+       << ", "
+       << point.getY()
+       << ")";
     return os.str();
 }
-string point2str(Point*& point){
+string point2str(Point *&point)
+{
     stringstream os;
-    os  << "("  << point->getX() 
-                << ", "
-                << point->getY()
-        << ")";
+    os << "(" << point->getX()
+       << ", "
+       << point->getY()
+       << ")";
     return os.str();
 }
 
-string int2str(int& value){
+string int2str(int &value)
+{
     stringstream os;
     os << value;
     return os.str();
 }
-string int2str(int*& value){
+string int2str(int *&value)
+{
     stringstream os;
     os << *value;
     return os.str();
 }
 
 #endif /* SAMPLEFUNC_H */
-

@@ -282,6 +282,7 @@ int getID(string input)
             int start = 4;
             int end = input.find(" ", start);
             id_str = input.substr(start, end - start);
+            // cout << id_str << endl;
             return stoi(id_str);
         }
         else
@@ -390,8 +391,8 @@ int main()
     // string line = "REG ";
     // line = line + to_string(1) + " " + "Gia" + " " + to_string(19);
     // cout << line;
-    string line = "REGM 5 105 3";
+    string line = "REG 15 pu 90";
     cout << getName(line) << endl;
-    // cout << getID(line) << endl;
+    cout << getID(line) << endl;
     return 0;
 }
