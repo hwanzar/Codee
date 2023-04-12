@@ -18,6 +18,11 @@
 #include "../util/ArrayLib.h"
 #include "../util/sampleFunc.h"
 #include "../util/FuncLib.h"
+#define outtext freopen("output.txt", "w", stdout)
+#define _io                           \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL);                    \
+    cout.tie(NULL)
 
 int hashFunc(int &key, int tablesize)
 {
@@ -519,6 +524,8 @@ void countryDemo()
 
 int main()
 {
+    _io;
+    outtext;
     countryDemo();
     return 0;
 }

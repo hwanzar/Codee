@@ -1,5 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define outtext freopen("output.txt", "w", stdout)
+#define _io                           \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL);                    \
+    cout.tie(NULL)
+
 class BTNode
 {
 public:
@@ -55,6 +61,33 @@ public:
 
         return root;
     }
+    // static BTNode *createTree(int arr[], int size)
+    // {
+    //     if (size == 0)
+    //         return NULL;
+    //     BTNode *root = new BTNode(arr[0]);
+    //     queue<BTNode *> q;
+    //     q.push(root);
+    //     int i = 1;
+    //     while (!q.empty() && i < size)
+    //     {
+    //         BTNode *curr = q.front();
+    //         q.pop();
+    //         if (arr[i] != -1)
+    //         {
+    //             curr->left = new BTNode(arr[i]);
+    //             q.push(curr->left);
+    //         }
+    //         i++;
+    //         if (i < size && arr[i] != -1)
+    //         {
+    //             curr->right = new BTNode(arr[i]);
+    //             q.push(curr->right);
+    //         }
+    //         i++;
+    //     }
+    //     return root;
+    // }
 };
 int sumSubtree(BTNode *root)
 {
@@ -73,43 +106,230 @@ int distinctParities(BTNode *root)
     }
     return distinctParities(root->left) + distinctParities(root->right);
 }
+
+bool checkGreatAncestor(BTNode *node, int val)
+{
+    if (node == NULL)
+        return true;
+    if (node->val > val)
+        return false;
+    return checkGreatAncestor(node->left, val) && checkGreatAncestor(node->right, val);
+}
+
+int count_greatAncestor(BTNode *node)
+{
+    if (node == NULL)
+        return 0;
+    int count = 0;
+    if (checkGreatAncestor(node, node->val))
+        count++;
+    count += count_greatAncestor(node->left);
+    count += count_greatAncestor(node->right);
+    return count;
+}
 int greatAncestor(BTNode *root)
 {
-    if (!root)
-    {
+    return count_greatAncestor(root);
+}
+
+int largestValue(BTNode *root)
+{
+    if (root == NULL)
         return 0;
-    }
-    int count = 0;
-    if (!root->left && !root->right)
+    int max = root->val;
+    BTNode *curr = root->left;
+    while (curr != NULL)
     {
-        // leaf node is a great ancestor node
-        return 1;
+        if (curr->val > max)
+            max = curr->val;
+        curr = curr->right;
+    }
+    return max;
+}
+// largestDiff
+void findMax(BTNode *node, int base, vector<int> &max)
+{
+    if (node == NULL)
+        return;
+    max.push_back(abs(node->val - base));
+
+    if (node->left == NULL && node->right == NULL)
+    {
+        return;
     }
     else
     {
-        // check if root is a great ancestor node
-        bool isGreatAncestor = true;
-        if (root->left)
-        {
-            isGreatAncestor &= root->val >= root->left->val && greatAncestor(root->left) > 0;
-        }
-        if (root->right)
-        {
-            isGreatAncestor &= root->val >= root->right->val && greatAncestor(root->right) > 0;
-        }
-        if (isGreatAncestor)
-        {
-            count++;
-        }
+        findMax(node->left, base, max);
+        findMax(node->right, base, max);
     }
-    return count;
 }
 
+int largestDiff(BTNode *root)
+{
+    if (root == NULL)
+        return 0;
+    vector<int> max;
+    queue<BTNode *> q;
+    q.push(root);
+    while (!q.empty())
+    {
+        BTNode *cur = q.front();
+        int base = cur->val;
+        q.pop();
+        findMax(cur, base, max);
+
+        if (cur->left != NULL)
+            q.push(cur->left);
+        if (cur->right != NULL)
+            q.push(cur->right);
+    }
+    int maxOfMax = max[0];
+    for (auto x : max)
+    {
+        if (x > maxOfMax)
+        {
+            maxOfMax = x;
+        }
+    }
+
+    return maxOfMax;
+}
+
+// sumDigitPath
+const int MOD = 27022001;
+int sumDigitPathUtils(BTNode *node, int val)
+{
+    if (node == NULL)
+        return 0;
+    val = ((val * 10) + node->val) % MOD;
+    return (sumDigitPathUtils(node->left, val) + sumDigitPathUtils(node->right, val)) % MOD;
+}
+int sumDigitPath(BTNode *root)
+{
+    return sumDigitPathUtils(root, 0);
+}
+
+// findDeepest
+void findDeepest(BTNode *node, int depth, int &maxDepth, int &secondMaxDepth)
+{
+    if (node == NULL)
+        return;
+    if (node->left == NULL && node->right == NULL)
+    {
+        if (depth > maxDepth)
+        {
+            secondMaxDepth = maxDepth;
+            maxDepth = depth;
+        }
+        else if (depth > secondMaxDepth && depth < maxDepth)
+        {
+            secondMaxDepth = depth;
+        }
+    }
+    findDeepest(node->left, depth + 1, maxDepth, secondMaxDepth);
+    findDeepest(node->right, depth + 1, maxDepth, secondMaxDepth);
+}
+
+int secondDeepest(BTNode *root)
+{
+    int maxDepth = -1;
+    int secondMaxDepth = -1;
+    findDeepest(root, 0, maxDepth, secondMaxDepth);
+    return secondMaxDepth;
+}
+
+// lowestAncestor
+int lowestAncestor(BTNode *root, int a, int b)
+{
+    if (root == NULL)
+        return -1;
+    if (root->val == a || root->val == b)
+        return root->val;
+    int left = lowestAncestor(root->left, a, b);
+    int right = lowestAncestor(root->right, a, b);
+    if (left != -1 && right != -1)
+        return root->val;
+    if (left != -1)
+        return left;
+    return right;
+}
+
+// ===== longestPathSum =====
+
+int sumPath(vector<int> a)
+{
+    int sum = 0;
+    for (auto k : a)
+    {
+        sum += k;
+    }
+    return sum;
+}
+
+vector<int> longestPath(BTNode *root)
+{
+    if (root == NULL)
+    {
+        vector<int> nothing = {};
+        return nothing;
+    }
+    vector<int> leftPath = longestPath(root->left);
+    vector<int> rightPath = longestPath(root->right);
+
+    // compare
+
+    leftPath.push_back(root->val);
+
+    rightPath.push_back(root->val);
+    // return (leftPath.size() > rightPath.size()) ? leftPath : rightPath;
+    if (leftPath.size() > rightPath.size())
+        return leftPath;
+    else if (leftPath.size() == rightPath.size())
+    {
+        if (sumPath(leftPath) > sumPath(rightPath))
+            return leftPath;
+        else
+            return rightPath;
+    }
+    return rightPath;
+}
+
+int longestPathSum(BTNode *root)
+{
+    int sum = 0;
+    vector<int> resPath = longestPath(root);
+    return sumPath(resPath);
+}
 int main()
 {
-    int arr[] = {-1, 0, 0, 2, 2};
-    int value[] = {1, 5, 3, 4, 7};
-    int n = sizeof(arr) / sizeof(int);
-    BTNode *root = BTNode::createTree(arr, n, value);
-    cout << distinctParities(root);
+    _io;
+    outtext;
+    // int arr[] = {-1, 0, 0};
+    // int value[] = {1, 2, 3};
+    // BTNode *root = BTNode::createTree(arr, sizeof(arr) / sizeof(int), value);
+    // cout << sumDigitPath(root);
+    // int arr[] = {-1, 0, 0, 2, 2, 3, 4};
+    // int value[] = {1, 2, 3, 4, 5, 6, 7};
+    // BTNode *root = BTNode::createTree(arr, sizeof(arr) / sizeof(int), value);
+    // cout << secondDeepest(root);
+    // cout << distinctParities(root);
+    // int arr[] = {-1, 0};
+    // int value[] = {1, 0};
+    // BTNode *root = BTNode::createTree(arr, sizeof(arr) / sizeof(int), value);
+    // cout << largestDiff(root) << "\n";
+
+    // int arr[] = {-1, 0, 0, 2, 2, 3, 3, 5};
+    // int value[] = {1, 5, 4, 7, 12, 4, 8, 2};
+    // BTNode *root = BTNode::createTree(arr, sizeof(arr) / sizeof(int), value);
+    // cout << longestPathSum(root);
+
+    int arr[] = {-1, 0, 0, 2, 2, 3, 3, 5};
+    int value[] = {1, 5, 4, 7, 12, 4, 8, 2};
+    BTNode *root = BTNode::createTree(arr, sizeof(arr) / sizeof(int), value);
+    cout << longestPathSum(root);
+
+    // int arr[] = {-1, 0, 0, 1, 1, 4, 2, 2, 7};
+    // int value[] = {3, 4, 5, 6, 7, 8, 9, 10, 0};
+    // BTNode *root = BTNode::createTree(arr, sizeof(arr) / sizeof(int), value);
+    // cout << longestPathSum(root);
 }
