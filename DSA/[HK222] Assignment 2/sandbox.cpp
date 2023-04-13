@@ -1,4 +1,6 @@
 #include <iostream>
+#include <bits/stdc++.h>
+
 #include <queue>
 #include <unordered_map>
 
@@ -25,6 +27,14 @@ struct Node
     }
 };
 
+bool comparator(const pair<char, int> &a, const pair<char, int> &b)
+{
+    if (a.second != b.second)
+    {
+        return a.second < b.second;
+    }
+    return a.first < b.first;
+}
 // compare function for priority queue
 struct compare
 {
@@ -92,10 +102,21 @@ int main()
     {
         freq[c]++;
     }
+    for (auto it = freq.begin(); it != freq.end(); it++)
+    {
+        cout << it->first << ": " << it->second << endl;
+    }
+    vector<pair<char, int>> Freq(freq.begin(), freq.end());
 
+    sort(Freq.begin(), Freq.end(), comparator);
+    cout << "FREQ" << endl;
+    for (auto it = Freq.begin(); it != Freq.end(); it++)
+    {
+        cout << it->first << ": " << it->second << endl;
+    }
     // create leaf nodes for each character
     priority_queue<Node *, vector<Node *>, compare> pq;
-    for (auto it = freq.begin(); it != freq.end(); it++)
+    for (auto it = Freq.begin(); it != Freq.end(); it++)
     {
         pq.push(new Node(it->first, it->second));
     }
