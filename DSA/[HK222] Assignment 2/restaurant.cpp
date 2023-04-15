@@ -9,7 +9,7 @@ class HuffmanCoding
 {
 public:
 	class Node;
-	class comparator;
+	struct comparator;
 
 	Node *getNode(char ch, int freq, Node *left, Node *right)
 	{
@@ -25,7 +25,8 @@ public:
 
 	void HuffmanTree(string inp)
 	{
-		// inp is the input, so called plain text.
+		// build huffman tree
+		//  inp is the input, so called plain text.
 		unordered_map<char, int> freq;
 		for (char ch : inp)
 		{
@@ -38,18 +39,40 @@ public:
 		{
 			pq.push(getNode(item.first, item.second, nullptr, nullptr));
 		}
-		// cout << "Debug the priority queue: " << endl;
-		// while (!pq.empty())
-		// {
-		// 	cout << pq.top()->ch << ": " << pq.top()->freq << "\n";
-		// 	pq.pop();
-		// }
+		priority_queue<Node *, vector<Node *>, comparator> pq_cpy;
+		pq_cpy = pq;
+		cout << "Debug the priority queue:x " << endl;
+		while (!pq_cpy.empty())
+		{
+			cout << pq_cpy.top()->ch << ": " << pq_cpy.top()->freq << "\n";
+			pq_cpy.pop();
+		}
+		while (pq.size() != 1)
+		{
+			Node *left = pq.top();
+			pq.pop();
+			Node *right = pq.top();
+			pq.pop();
 
+			int sum = left->freq + right->freq;
+			pq.push(getNode('~', sum, left, right));
+		}
+
+		Node *root = pq.top();
+
+		unordered_map<char, string> huffmanCode;
+		encode(root, "", huffmanCode);
+
+		cout << "Encoded------------------\n";
+		for (auto pair : huffmanCode)
+		{
+			cout << pair.first << ": " << pair.second << '\n';
+		}
 	}
 
 	void encode(Node *root, string str, unordered_map<char, string> &HuffmanCode)
 	{
-		if (root = nullptr)
+		if (root == nullptr)
 			return;
 
 		if (!root->left && !root->right)
@@ -57,6 +80,27 @@ public:
 
 		encode(root->left, str + "0", HuffmanCode);
 		encode(root->right, str + "1", HuffmanCode);
+	}
+	void decode(Node *root, int &index, string str)
+	{
+		if (root == nullptr)
+		{
+			return;
+		}
+
+		// found a leaf node
+		if (!root->left && !root->right)
+		{
+			cout << root->ch;
+			return;
+		}
+
+		index++;
+
+		if (str[index] == '0')
+			decode(root->left, index, str);
+		else
+			decode(root->right, index, str);
 	}
 
 public:
@@ -74,10 +118,14 @@ public:
 			this->freq = freq;
 		}
 	};
-	class comparator
+	struct comparator
 	{
 		bool operator()(Node *left, Node *right)
 		{
+			if (left->freq == right->freq)
+			{
+				return left->ch >= right->ch;
+			}
 			return left->freq > right->freq;
 		}
 	};
@@ -109,7 +157,9 @@ void reg(string input)
 {
 	// cout << getCommand(input) << endl;
 	// cout << getName(input) << endl;
-
+	HuffmanCoding *huffman;
+	string name = getName(input);
+	huffman->HuffmanTree(name);
 	return;
 }
 
