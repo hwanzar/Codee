@@ -5,6 +5,8 @@
 	cin.tie(NULL);                    \
 	cout.tie(NULL)
 
+/* DATA STRUCTURE */
+// cần sửa huffman, đang sort theo thứ tự chư cái và tần số.
 class HuffmanCoding
 {
 public:
@@ -22,8 +24,7 @@ public:
 
 		return node;
 	}
-
-	void HuffmanTree(string inp)
+	string HuffmanTree(string inp)
 	{
 		// build huffman tree
 		//  inp is the input, so called plain text.
@@ -55,7 +56,7 @@ public:
 			pq.pop();
 
 			int sum = left->freq + right->freq;
-			pq.push(getNode('~', sum, left, right));
+			pq.push(getNode('-', sum, left, right));
 		}
 
 		Node *root = pq.top();
@@ -63,11 +64,17 @@ public:
 		unordered_map<char, string> huffmanCode;
 		encode(root, "", huffmanCode);
 
-		cout << "Encoded------------------\n";
+		cout << "Encoded\n";
 		for (auto pair : huffmanCode)
 		{
 			cout << pair.first << ": " << pair.second << '\n';
 		}
+		string result = "";
+		for (auto ch : inp)
+		{
+			result += huffmanCode[ch];
+		}
+		return result;
 	}
 
 	void encode(Node *root, string str, unordered_map<char, string> &HuffmanCode)
@@ -131,6 +138,13 @@ public:
 	};
 };
 
+class AVL
+{
+public:
+};
+
+/*=== REG Command ===*/
+// helper function
 string getCommand(string input)
 {
 	int pos = input.find(" ");
@@ -138,6 +152,19 @@ string getCommand(string input)
 	return command;
 }
 
+int BinToDec(string binary)
+{
+	long long decimal = 0;
+	for (int i = 0; i < binary.length(); i++)
+	{
+		if (binary[i] == '1')
+		{
+			decimal += (int)pow(2, binary.length() - 1 - i);
+		}
+	}
+	cout << "Convert to number" << decimal << endl;
+	return decimal;
+}
 string getName(string input)
 {
 	string lastWord;
@@ -153,16 +180,78 @@ string getName(string input)
 	return lastWord;
 }
 
+// 3. Chọn bàn
+int getID(int res)
+{
+	int id = res % MAXSIZE;
+}
+
 void reg(string input)
 {
 	// cout << getCommand(input) << endl;
 	// cout << getName(input) << endl;
 	HuffmanCoding *huffman;
 	string name = getName(input);
-	huffman->HuffmanTree(name);
+	string modifiedName = huffman->HuffmanTree(name);
+	string newName = modifiedName.substr(modifiedName.length() - 15);
+	cout
+		<< "The Huffman number is\n"
+		<< newName << endl;
+
+	int Result = BinToDec(newName);
+
+	return;
+}
+/*=== END REG Command ===*/
+
+/*=== START CLE Command ===*/
+// helper function
+
+// main function
+void cle(string inp)
+{
+	cout << "Command written" << endl;
+}
+
+/*=== END CLE Command ===*/
+
+/*=== START printHT Command ===*/
+// helper function
+
+// main function
+void printHT(string inp)
+{
+	cout << "Command Print Hash Table written" << endl;
 	return;
 }
 
+/*=== END printHT Command ===*/
+
+/*=== START printAVL Command ===*/
+// helper function
+
+// main function
+void printAVL(string inp)
+{
+	cout << "Command Print AVL tree written" << endl;
+	return;
+}
+
+/*=== END printAVL Command ===*/
+//
+//
+//
+/*=== START printMH Command ===*/
+// helper function
+
+// main function
+void printMH(string inp)
+{
+	cout << "Command Print Min Heap written" << endl;
+	return;
+}
+
+/*=== END printMH Command ===*/
 void simulate(string filename)
 {
 	_io;
@@ -173,9 +262,26 @@ void simulate(string filename)
 		string line;
 		while (getline(file, line))
 		{
-			if (getCommand(line) == "REG")
+			string command = getCommand(line);
+			if (command == "REG")
 			{
 				reg(line);
+			}
+			if (command == "CLE")
+			{
+				cle(line);
+			}
+			if (command == "PrintHT")
+			{
+				printHT(line);
+			}
+			if (command == "PrintAVL")
+			{
+				printAVL(line);
+			}
+			if (command == "PrintMH")
+			{
+				printMH(line);
 			}
 		}
 
@@ -183,6 +289,5 @@ void simulate(string filename)
 	}
 	else
 		cout << "Not found FILE" << endl;
-
 	return;
 }

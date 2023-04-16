@@ -16,6 +16,14 @@ int binarySearch(int arr[], int left, int right, int x)
     
 }
 
+int jumpSearch(int x, int y){
+
+}
+
+int interpolarSearch(int arr[], int x){
+
+}
+
 int main()
 {
     outtext;

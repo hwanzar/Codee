@@ -41,7 +41,7 @@ int main()
 
     int arr[] = {0, 1, 2, 3, 4, 5, 6, 7};
     vector<int> a{8, 7, 6, 5, 4, 3, 2, 1};
-    reHeapDown(a, 0);
+    reHeapUp(a, 1);
     for (int i = 0; i < a.size(); i++)
     {
         cout << a[i] << endl;
