@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   PriorityQueue.h
  * Author: LTSACH
  *
@@ -13,18 +13,19 @@
 
 #ifndef PRIORITYQUEUE_H
 #define PRIORITYQUEUE_H
-#include "heap/Heap.h"
+#include <bits/stdc++.h>
+#include "../heap/Heap.h"
 
-template<class T>
-class PriorityQueue: public Heap<T>{
+template <class T>
+class PriorityQueue : public Heap<T>
+{
 public:
     class Iterator;
-    
-    PriorityQueue(  int (*comparator)(T& , T&)=0, 
-                    void (*removeData)(Heap<T>*)=0):
-        Heap<T>(comparator, removeData){
+
+    PriorityQueue(int (*comparator)(T &, T &) = 0,
+                  void (*removeData)(Heap<T> *) = 0) : Heap<T>(comparator, removeData)
+    {
     }
 };
 
 #endif /* PRIORITYQUEUE_H */
-

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-const int SIZE = 3;
+const int SIZE = 16;
 
 class HashTable
 {
@@ -13,7 +13,7 @@ private:
     int size;
     int hashFunc(int key)
     {
-        return key % SIZE;
+        return key % 3;
     }
 
 public:
@@ -105,8 +105,10 @@ int main()
     HashTable ht;
     ht.insert(2, 20);
     ht.insert(3, 30);
+    ht.insert(3, 30);
     ht.insert(5, 50);
     ht.insert(7, 70);
+    ht.insert(8, 50);
     ht.display();
     cout << "Search for key 3: " << ht.search(3) << endl;
     cout << "Removing key 3..." << endl;

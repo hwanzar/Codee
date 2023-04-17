@@ -26,6 +26,8 @@ a: 001
 n: 00010
 h: 111
 u: 0000
-The Huffman number is
+== HUFFMAN ==
 011011111011110
-Convert to number14302
+14302
+==AVL==
+(key = 14302)  (0)

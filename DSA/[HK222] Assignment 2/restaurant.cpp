@@ -1,10 +1,10 @@
 #include "main.h"
+#include "demoCode/demoAVL.cpp"
 #define outtext freopen("output.txt", "w", stdout)
 #define _io                           \
 	ios_base::sync_with_stdio(false); \
 	cin.tie(NULL);                    \
 	cout.tie(NULL)
-
 /* DATA STRUCTURE */
 // cần sửa huffman, đang sort theo thứ tự chư cái và tần số.
 class HuffmanCoding
@@ -137,11 +137,11 @@ public:
 		}
 	};
 };
+/*----------DEFINE DATA STRUCTURE-------------*/
+HuffmanCoding *huffman;
+AVL area2; // area2 AVL
 
-class AVL
-{
-public:
-};
+
 
 /*=== REG Command ===*/
 // helper function
@@ -162,7 +162,6 @@ int BinToDec(string binary)
 			decimal += (int)pow(2, binary.length() - 1 - i);
 		}
 	}
-	cout << "Convert to number" << decimal << endl;
 	return decimal;
 }
 string getName(string input)
@@ -183,22 +182,27 @@ string getName(string input)
 // 3. Chọn bàn
 int getID(int res)
 {
-	int id = res % MAXSIZE;
+	int ID = res % MAXSIZE;
+	return ID;
 }
 
 void reg(string input)
 {
 	// cout << getCommand(input) << endl;
 	// cout << getName(input) << endl;
-	HuffmanCoding *huffman;
+
 	string name = getName(input);
 	string modifiedName = huffman->HuffmanTree(name);
 	string newName = modifiedName.substr(modifiedName.length() - 15);
 	cout
-		<< "The Huffman number is\n"
+		<< "== HUFFMAN ==\n"
 		<< newName << endl;
 
 	int Result = BinToDec(newName);
+	cout << Result << endl;
+
+	area2.addAVLTree(Result);
+	cout << area2.toStringPreOrder();
 
 	return;
 }
