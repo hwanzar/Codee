@@ -8,11 +8,7 @@ using namespace std;
 
 int binarySearch(int arr[], int left, int right, int x)
 {
-    if(left > right) return -1;
-    int mid = (left+right)/2;
-    cout << "We traverse on index: "<< mid << '\n';
-
-    if(arr[mid] == x) return mid;
+  
     
 }
 

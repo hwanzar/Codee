@@ -40,23 +40,17 @@ public:
 		{
 			pq.push(getNode(item.first, item.second, nullptr, nullptr));
 		}
-		priority_queue<Node *, vector<Node *>, comparator> pq_cpy;
-		pq_cpy = pq;
-		cout << "Debug the priority queue:x " << endl;
-		while (!pq_cpy.empty())
-		{
-			cout << pq_cpy.top()->ch << ": " << pq_cpy.top()->freq << "\n";
-			pq_cpy.pop();
-		}
+		// debugPQ(pq);
 		while (pq.size() != 1)
 		{
 			Node *left = pq.top();
 			pq.pop();
 			Node *right = pq.top();
 			pq.pop();
-
+			// cout << left->ch << right->ch << endl;
 			int sum = left->freq + right->freq;
-			pq.push(getNode('-', sum, left, right));
+			pq.push(getNode('~', sum, left, right));
+			// debugPQ(pq);
 		}
 
 		Node *root = pq.top();
@@ -64,11 +58,11 @@ public:
 		unordered_map<char, string> huffmanCode;
 		encode(root, "", huffmanCode);
 
-		cout << "Encoded\n";
-		for (auto pair : huffmanCode)
-		{
-			cout << pair.first << ": " << pair.second << '\n';
-		}
+		// cout << "Encoded\n";
+		// for (auto pair : huffmanCode)
+		// {
+		// 	cout << pair.first << ": " << pair.second << '\n';
+		// }
 		string result = "";
 		for (auto ch : inp)
 		{
@@ -109,6 +103,26 @@ public:
 		else
 			decode(root->right, index, str);
 	}
+	void debugPQ(
+		priority_queue<Node *, vector<Node *>, comparator> gq)
+	{
+		priority_queue<Node *, vector<Node *>, comparator> g = gq;
+
+		while (!g.empty())
+		{
+			cout << ' ' << g.top()->freq << "" << g.top()->ch;
+			if (g.top()->left != NULL)
+			{
+				cout << g.top()->left->ch;
+			}
+			if (g.top()->right != NULL)
+			{
+				cout << g.top()->right->ch;
+			}
+			g.pop();
+		}
+		cout << '\n';
+	}
 
 public:
 	class Node
@@ -124,24 +138,28 @@ public:
 			this->ch = ch;
 			this->freq = freq;
 		}
+		bool isLeaf()
+		{
+			return (left == NULL && right == NULL);
+		}
 	};
 	struct comparator
 	{
-		bool operator()(Node *left, Node *right)
+		bool operator()(Node *a, Node *b)
 		{
-			if (left->freq == right->freq)
+			if (a->freq == b->freq)
 			{
-				return left->ch >= right->ch;
+				if (a->ch == b->ch)
+					return a > b;
+				return a->ch > b->ch;
 			}
-			return left->freq > right->freq;
+			return a->freq > b->freq;
 		}
 	};
 };
 /*----------DEFINE DATA STRUCTURE-------------*/
-HuffmanCoding *huffman;
+
 AVL area2; // area2 AVL
-
-
 
 /*=== REG Command ===*/
 // helper function
@@ -190,7 +208,7 @@ void reg(string input)
 {
 	// cout << getCommand(input) << endl;
 	// cout << getName(input) << endl;
-
+	HuffmanCoding *huffman = new HuffmanCoding();
 	string name = getName(input);
 	string modifiedName = huffman->HuffmanTree(name);
 	string newName = modifiedName.substr(modifiedName.length() - 15);
@@ -201,8 +219,8 @@ void reg(string input)
 	int Result = BinToDec(newName);
 	cout << Result << endl;
 
-	area2.addAVLTree(Result);
-	cout << area2.toStringPreOrder();
+	// area2.addAVLTree(Result);
+	// cout << area2.toStringPreOrder();
 
 	return;
 }

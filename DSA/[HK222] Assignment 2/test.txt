@@ -5,6 +5,8 @@ REG uiewhqruihqiuwerhnbdasnbfnmasd
 REG ukkajhsdfjkasbndbmnFJKHJKsdbfsabdf
 REG kjasdbfjksbDFFDFFfdjksabfdjkasdf
 REG skjafdbkjasfnmFFFFsaddnfdf
+REG ABBCCCABBAEEDDEDA
+
 CLE 5
 PrintHT
 PrintAVL

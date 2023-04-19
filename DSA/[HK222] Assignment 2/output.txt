@@ -1,33 +1,28 @@
-Debug the priority queue:x 
-J: 1
-g: 1
-n: 1
-o: 1
-u: 1
-d: 2
-i: 2
-s: 2
-a: 3
-b: 3
-j: 3
-f: 4
-h: 4
-Encoded
-g: 10101
-d: 1011
-J: 10100
-f: 110
-s: 1001
-i: 1000
-j: 011
-b: 010
-o: 00011
-a: 001
-n: 00010
-h: 111
-u: 0000
 == HUFFMAN ==
-011011111011110
-14302
-==AVL==
-(key = 14302)  (0)
+010111101010100
+12116
+== HUFFMAN ==
+101000011011010
+20698
+== HUFFMAN ==
+011110111110101
+15861
+== HUFFMAN ==
+101011011001000
+22216
+== HUFFMAN ==
+111010010101110
+29870
+== HUFFMAN ==
+011111110010011
+16275
+== HUFFMAN ==
+101000110101110
+20910
+== HUFFMAN ==
+001111110011101
+8093
+Command written
+Command Print Hash Table written
+Command Print AVL tree written
+Command Print Min Heap written
