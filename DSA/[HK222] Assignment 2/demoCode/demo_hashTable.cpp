@@ -6,13 +6,13 @@ using namespace std;
 class HashTable
 {
 public:
-    map<int, table *> hashTable;
+    map<int, table> hashTable;
     int tableCnt;
     HashTable()
     {
         for (int i = 0; i < MAXSIZE / 2; i++)
         {
-            hashTable[i] = new table(0, "", 0, 0);
+            hashTable[i] = table(0, "", 0, 0);
         }
         tableCnt = 0;
     }
@@ -22,11 +22,11 @@ public:
     }
 
 public:
-    void insert(int key, table *tb)
+    void insert(int key, table tb)
     {
         int newkey = hashFx(key);
 
-        while (hashTable[newkey]->name != "")
+        while (hashTable[newkey].name != "")
         {
             newkey = (newkey == MAXSIZE - 1) ? 0 : (newkey + 1) % (MAXSIZE / 2);
             // newkey = (newkey + 1) % (MAXSIZE / 2);
@@ -38,16 +38,16 @@ public:
     {
         int key = hashFx(id);
 
-        while (hashTable[key]->id != id && hashTable[key]->name != "")
+        while (hashTable[key].id != id && hashTable[key].name != "")
         {
             key = (key == MAXSIZE - 1) ? 0 : (key + 1) % (MAXSIZE / 2);
         }
 
-        if (hashTable[key]->id == id)
+        if (hashTable[key].id == id)
         {
             // Remove the table object from the hash table
-            delete hashTable[key];
-            hashTable[key] = new table(0, "", 0, 0);
+            // delete hashTable[key];
+            hashTable[key] = table(0, "", 0, 0);
             tableCnt--;
         }
     }
@@ -57,7 +57,7 @@ public:
         cout << "==== AREA 1 - HASH TABLE ====\n";
         for (auto pair : hashTable)
         {
-            cout << pair.first << " " << pair.second->id << ": " << pair.second->result << endl;
+            cout << pair.first << " " << pair.second.id << ": " << pair.second.result << endl;
         }
         cout << "=============================\n";
     }
@@ -74,7 +74,7 @@ public:
         for (int key = 0; key < MAXSIZE / 2; key++)
         {
 
-            if (hashTable[key]->id == ID)
+            if (hashTable[key].id == ID)
             {
                 return true;
             }

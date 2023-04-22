@@ -5,9 +5,9 @@
 #include "demoCode/demo_hashTable.cpp"
 
 /*----------DEFINE DATA STRUCTURE-------------*/
-unordered_map<string, table *> restaurant;
-queue<table *> fifo;
-vector<table *> lrco;
+unordered_map<string, table> restaurant;
+queue<table> fifo;
+vector<table> lrco;
 HashTable area1;
 AVL area2; // area2 AVL
 
@@ -95,11 +95,11 @@ void regFull()
 	// LFCO
 	return;
 }
-bool checkName(unordered_map<string, table *> restaurant, string name)
+bool checkName(unordered_map<string, table> restaurant, string name)
 {
 	for (auto pair : restaurant)
 	{
-		if (pair.second->name == name)
+		if (pair.second.name == name)
 			return true;
 	}
 	return false;
@@ -144,22 +144,32 @@ void reg(string input)
 			else
 				ID++;
 		}
-		table *tb = new table(ID, name, Result, 1);
+		table tb = table(ID, name, Result, 1);
 		restaurant[name] = tb;
 		fifo.push(tb);
-
+		lrco.push_back(tb);
 		if (select_area == 1)
 		{
-			area1.insert(tb->result, tb);
+			area1.insert(tb.result, tb);
 		}
 		if (select_area == 2)
 		{
-			area2.addAVLTree(tb->result, tb);
+			area2.addAVLTree(tb.result, tb);
 		}
 	}
 	else
 	{
-		restaurant[name]->dish++;
+		restaurant[name].dish++;
+		table tmpTable;
+		for (int i = 0; i < lrco.size(); i++)
+		{
+			if (lrco[i].name == name)
+			{
+				table tmpTable = lrco[i];
+				lrco.erase(lrco.begin() + i);
+			}
+		}
+		lrco.push_back(tmpTable);
 	}
 
 	// function: checkName in the restaurant. if has name, no FIFO, add dish to LRCO.

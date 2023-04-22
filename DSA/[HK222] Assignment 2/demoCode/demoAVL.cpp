@@ -102,7 +102,7 @@ public:
         }
         return root;
     }
-    Node *addAVL(Node *root, int key, table *tb)
+    Node *addAVL(Node *root, int key, table tb)
     {
         if (root == nullptr)
         {
@@ -180,7 +180,7 @@ public:
         {
             return "";
         }
-        ans = ("(key = " + to_string(root->key) + ") " + " (" + to_string(root->tb->id) + ")\n");
+        ans = ("(key = " + to_string(root->key) + ") " + " (" + to_string(root->tb.id) + ")\n");
 
         ans += toStringPreOrder(root->left, ans);
         ans += toStringPreOrder(root->right, ans);
@@ -200,7 +200,7 @@ public:
             {
                 Node *curr = q.front();
                 q.pop();
-                ans += ("Result (KEY): " + to_string(curr->tb->result) + "    " + to_string(curr->tb->id) + "\n");
+                ans += ("Result (KEY): " + to_string(curr->tb.result) + "    " + to_string(curr->tb.id) + "\n");
                 if (curr->left != nullptr)
                 {
                     q.push(curr->left);
@@ -216,7 +216,7 @@ public:
     };
 
 public:
-    void addAVLTree(int key, table *tb)
+    void addAVLTree(int key, table tb)
     {
         root = addAVL(root, key, tb);
     }
@@ -250,7 +250,7 @@ public:
         {
             return false; // The tree is empty, so the element is not in the tree
         }
-        else if (root->tb->id == ID)
+        else if (root->tb.id == ID)
         {
             return true; // Found the element
         }
@@ -277,13 +277,13 @@ public:
     {
     public:
         int key;
-        table *tb;
+        table tb;
         Node *left, *right;
         int bal_factor;
         friend class AVL;
 
     public:
-        Node(int key = 1, table *tb = nullptr, Node *left = nullptr, Node *right = nullptr, int bal_fac = 0)
+        Node(int key = 1, table tb = table(0, "", 0, 0), Node *left = nullptr, Node *right = nullptr, int bal_fac = 0)
         {
             this->key = key;
             this->tb = tb;

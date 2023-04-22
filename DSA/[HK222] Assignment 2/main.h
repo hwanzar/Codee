@@ -16,7 +16,7 @@ public:
     string name;
     int result;
     int dish;
-    table(int id, string name, int result, int dish)
+    table(int id = 0, string name = "", int result = 0, int dish = 0)
     {
         this->id = id;
         this->name = name;
