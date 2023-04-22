@@ -1,5 +1,5 @@
-#include <iostream>
-#include <string>
+#include <bits/stdc++.h>
+#include "../main.h"
 using namespace std;
 // #define outtext freopen("output.txt", "w", stdout);
 class AVL
@@ -7,7 +7,7 @@ class AVL
 public:
     class Node; // contain key == Result, ID ==
 
-protected:
+public:
     Node *root;
     int cnt;
 
@@ -25,7 +25,7 @@ public:
         }
     }
 
-protected:
+public:
     int height(Node *root)
     {
         if (root == nullptr)
@@ -102,22 +102,22 @@ protected:
         }
         return root;
     }
-    Node *addAVL(Node *root, int key)
+    Node *addAVL(Node *root, int key, table *tb)
     {
         if (root == nullptr)
         {
-            root = new Node(key);
+            root = new Node(key, tb);
             cnt++;
         }
         else
         {
             if (key < root->key)
             {
-                root->left = addAVL(root->left, key);
+                root->left = addAVL(root->left, key, tb);
             }
             else
             {
-                root->right = addAVL(root->right, key);
+                root->right = addAVL(root->right, key, tb);
             }
             root = balanced(root);
         }
@@ -180,16 +180,45 @@ protected:
         {
             return "";
         }
-        ans = ("(key = " + to_string(root->key) + ") " + " (" + to_string(root->id) + ")\n");
+        ans = ("(key = " + to_string(root->key) + ") " + " (" + to_string(root->tb->id) + ")\n");
+
         ans += toStringPreOrder(root->left, ans);
         ans += toStringPreOrder(root->right, ans);
         return ans;
     }
+    string PrintBFT(Node *root, string ans = "") const
+    {
+        if (root == nullptr)
+            return "Nothing";
+        queue<Node *> q;
+        q.push(root);
+
+        while (!q.empty())
+        {
+            int size = q.size();
+            for (int i = 0; i < size; i++)
+            {
+                Node *curr = q.front();
+                q.pop();
+                ans += ("Result (KEY): " + to_string(curr->tb->result) + "    " + to_string(curr->tb->id) + "\n");
+                if (curr->left != nullptr)
+                {
+                    q.push(curr->left);
+                }
+                if (curr->right != nullptr)
+                {
+                    q.push(curr->right);
+                }
+            }
+            // ans += "\n";
+        }
+        return ans;
+    };
 
 public:
-    void addAVLTree(int key)
+    void addAVLTree(int key, table *tb)
     {
-        root = addAVL(root, key);
+        root = addAVL(root, key, tb);
     }
     void deleteAVLTree(int key)
     {
@@ -201,27 +230,58 @@ public:
     }
     string toStringPreOrder() const
     {
-        string ans = "==AVL==\n";
+        string ans = "==> AREA 2 - AVL <==\n";
         ans += toStringPreOrder(root, ans);
         // ans[ans.length() - 1] = ']';
-        return ans;
+
+        return ans + "==================\n";
+    }
+    string printBFT() const
+    {
+        string ans = "==> AREA 2 - AVL(BFT) <==\n";
+
+        string answer = PrintBFT(root, ans);
+        return answer + "=======================\n";
+    }
+    bool contains(Node *root, int ID)
+    {
+        if (root == nullptr)
+        {
+            return false; // The tree is empty, so the element is not in the tree
+        }
+        else if (root->tb->id == ID)
+        {
+            return true; // Found the element
+        }
+        else if (root->tb->id > ID)
+        {
+            return contains(root->left, ID); // Recurse on the left subtree
+        }
+        else
+        {
+            return contains(root->right, ID); // Recurse on the right subtree
+        }
+    }
+    bool containsID(int ID)
+    {
+        return contains(root, ID);
     }
 
 public:
     class Node
     {
-    private:
+    public:
         int key;
-        int id;
+        table *tb;
         Node *left, *right;
         int bal_factor;
         friend class AVL;
 
     public:
-        Node(int key = 1, int id = 0, Node *left = nullptr, Node *right = nullptr, int bal_fac = 0)
+        Node(int key = 1, table *tb = nullptr, Node *left = nullptr, Node *right = nullptr, int bal_fac = 0)
         {
             this->key = key;
-            this->id = id;
+            this->tb = tb;
             this->left = left;
             this->right = right;
             this->bal_factor = bal_fac;
@@ -231,13 +291,16 @@ public:
 
 // int main()
 // {
-//     outtext;
+//     // outtext;
 //     AVL avl;
 //     for (int i = 0; i < 12; i++)
 //     {
-//         avl.addAVLTree(i);
+//         table *tb = new table(i, "Gia", i, 1);
+
+//         avl.addAVLTree(i, tb);
 //     }
 //     cout << avl.toStringPreOrder() << '\n';
 //     avl.deleteAVLTree(0);
-//     cout << avl.size();
+//     // cout << avl.size();
+//     cout << avl.containsID(5);
 // }

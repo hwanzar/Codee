@@ -1,173 +1,13 @@
 #include "main.h"
+/*==== ADD-ON ====*/
 #include "demoCode/demoAVL.cpp"
-#define outtext freopen("output.txt", "w", stdout)
-#define _io                           \
-	ios_base::sync_with_stdio(false); \
-	cin.tie(NULL);                    \
-	cout.tie(NULL)
-/* DATA STRUCTURE */
-// cần sửa huffman, đang sort theo thứ tự chư cái và tần số.
-class HuffmanCoding
-{
-public:
-	class Node;
-	struct comparator;
+#include "demoCode/demo_huffmanCode.cpp"
+#include "demoCode/demo_hashTable.cpp"
 
-	Node *getNode(char ch, int freq, Node *left, Node *right)
-	{
-		Node *node = new Node();
-
-		node->ch = ch;
-		node->freq = freq;
-		node->left = left;
-		node->right = right;
-
-		return node;
-	}
-	string HuffmanTree(string inp)
-	{
-		// build huffman tree
-		//  inp is the input, so called plain text.
-		unordered_map<char, int> freq;
-		for (char ch : inp)
-		{
-			freq[ch] += 1;
-		}
-
-		// initialize priority queue, start building Huffman tree from this.
-
-		priority_queue<pair<Node *, int>, vector<pair<Node *, int>>, comparator> pq;
-
-		for (auto item : freq)
-		{
-			pair<Node *, int> node;
-			node.first = getNode(item.first, item.second, nullptr, nullptr);
-			node.second = 0;
-			pq.push(node);
-		}
-		// debugPQ(pq);
-		int order = 0;
-		while (pq.size() != 1)
-		{
-			Node *left = pq.top().first;
-			pq.pop();
-			Node *right = pq.top().first;
-			pq.pop();
-			// cout << left->ch << right->ch << endl;
-			int sum = left->freq + right->freq;
-
-			pq.push(make_pair(getNode('~', sum, left, right), ++order));
-			// debugPQ(pq);
-		}
-
-		Node *root = pq.top().first;
-
-		unordered_map<char, string> huffmanCode;
-		encode(root, "", huffmanCode);
-
-		// cout << "Encoded\n";
-		// for (auto pair : huffmanCode)
-		// {
-		// 	cout << pair.first << ": " << pair.second << '\n';
-		// }
-		string result = "";
-		for (auto ch : inp)
-		{
-			result += huffmanCode[ch];
-		}
-		return result;
-	}
-
-	void encode(Node *root, string str, unordered_map<char, string> &HuffmanCode)
-	{
-		if (root == nullptr)
-			return;
-
-		if (!root->left && !root->right)
-			HuffmanCode[root->ch] = str;
-
-		encode(root->left, str + "0", HuffmanCode);
-		encode(root->right, str + "1", HuffmanCode);
-	}
-	void decode(Node *root, int &index, string str)
-	{
-		if (root == nullptr)
-		{
-			return;
-		}
-
-		// found a leaf node
-		if (!root->left && !root->right)
-		{
-			cout << root->ch;
-			return;
-		}
-
-		index++;
-
-		if (str[index] == '0')
-			decode(root->left, index, str);
-		else
-			decode(root->right, index, str);
-	}
-	// void debugPQ(
-	// 	priority_queue<Node *, vector<Node *>, comparator> gq)
-	// {
-	// 	priority_queue<Node *, vector<Node *>, comparator> g = gq;
-
-	// 	while (!g.empty())
-	// 	{
-	// 		cout << ' ' << g.top()->freq << "" << g.top()->ch;
-	// 		if (g.top()->left != NULL)
-	// 		{
-	// 			cout << g.top()->left->ch;
-	// 		}
-	// 		if (g.top()->right != NULL)
-	// 		{
-	// 			cout << g.top()->right->ch;
-	// 		}
-	// 		g.pop();
-	// 	}
-	// 	cout << '\n';
-	// }
-
-public:
-	class Node
-	{
-	public:
-		char ch;
-		int freq;
-		Node *left, *right;
-
-	public:
-		Node()
-		{
-			this->ch = ch;
-			this->freq = freq;
-		}
-		bool isLeaf()
-		{
-			return (left == NULL && right == NULL);
-		}
-	};
-	struct comparator
-	{
-		bool operator()(pair<Node *, int> a, pair<Node *, int> b)
-		{
-			if (a.first->freq == b.first->freq)
-			{
-				if (a.first->ch == b.first->ch)
-					return a.second > b.second;
-				return a.first->ch > b.first->ch;
-			}
-			return a.first->freq > b.first->freq;
-		}
-	};
-};
 /*----------DEFINE DATA STRUCTURE-------------*/
 
 AVL area2; // area2 AVL
-
+HashTable area1;
 /*=== REG Command ===*/
 // helper function
 string getCommand(string input)
@@ -207,27 +47,82 @@ string getName(string input)
 // 3. Chọn bàn
 int getID(int res)
 {
-	int ID = res % MAXSIZE;
+	int ID = res % MAXSIZE + 1;
+	while (true)
+	{
+		if (ID > MAXSIZE)
+			return 1;
+		if (area2.containsID(ID))
+			ID++;
+		return ID;
+	}
 	return ID;
+}
+
+int getOPT(int res)
+{
+	return res % 3;
+}
+
+int SelectArea(int res)
+{
+	if (res % 2 != 0)
+	{
+		if (!area1.isFull())
+		{
+			return 1;
+			// insert hash table
+		}
+		else
+			return (area2.size() < MAXSIZE / 2) ? 2 : 3;
+	}
+
+	if (res % 2 == 0)
+	{
+		if (area2.size() < MAXSIZE / 2)
+		{
+			return 2;
+			// insert AVL
+		}
+		else
+			return (!area1.isFull()) ? 1 : 3;
+	}
+	return 3; // the restaurant is full.
+}
+
+void regFull()
+{
+	return;
 }
 
 void reg(string input)
 {
-	// cout << getCommand(input) << endl;
-	// cout << getName(input) << endl;
 	HuffmanCoding *huffman = new HuffmanCoding();
 	string name = getName(input);
 	string modifiedName = huffman->HuffmanTree(name);
 	string newName = modifiedName.substr(modifiedName.length() - 15);
-	cout
-		<< "== HUFFMAN ==\n"
-		<< newName << endl;
+	cout << "== Debug HUFFMAN ==\n"
+		 << newName << endl;
 
 	int Result = BinToDec(newName);
 	cout << Result << endl;
 
-	// area2.addAVLTree(Result);
-	// cout << area2.toStringPreOrder();
+	// get full information:
+	int ID = getID(Result);
+
+	int select_area = SelectArea(Result);
+
+	table *tb = new table(ID, name, Result, 1);
+	if (select_area == 3)
+		return regFull();
+	if (select_area == 1)
+	{
+		area1.insert(tb->result, tb);
+	}
+	if (select_area == 2)
+	{
+		area2.addAVLTree(tb->result, tb);
+	}
 
 	return;
 }
@@ -239,7 +134,7 @@ void reg(string input)
 // main function
 void cle(string inp)
 {
-	cout << "Command written" << endl;
+	cout << "Command CLE written" << endl;
 }
 
 /*=== END CLE Command ===*/
@@ -250,7 +145,7 @@ void cle(string inp)
 // main function
 void printHT(string inp)
 {
-	cout << "Command Print Hash Table written" << endl;
+	area1.display();
 	return;
 }
 
@@ -263,6 +158,7 @@ void printHT(string inp)
 void printAVL(string inp)
 {
 	cout << "Command Print AVL tree written" << endl;
+	cout << area2.printBFT();
 	return;
 }
 
@@ -276,15 +172,15 @@ void printAVL(string inp)
 // main function
 void printMH(string inp)
 {
-	cout << "Command Print Min Heap written" << endl;
+	cout << "Command Print Min Heap written\n"
+		 << endl;
 	return;
 }
 
 /*=== END printMH Command ===*/
 void simulate(string filename)
 {
-	_io;
-	outtext; // this line for output in another file
+
 	ifstream file(filename);
 	if (file.is_open())
 	{

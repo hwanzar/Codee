@@ -4,7 +4,6 @@
 #include <unordered_map>
 using namespace std;
 
-// A Tree node
 class HuffmanCoding
 {
 public:
@@ -31,27 +30,34 @@ public:
         {
             freq[ch] += 1;
         }
+
         // initialize priority queue, start building Huffman tree from this.
-        priority_queue<Node *, vector<Node *>, comparator> pq;
+
+        priority_queue<pair<Node *, int>, vector<pair<Node *, int>>, comparator> pq;
 
         for (auto item : freq)
         {
-            pq.push(getNode(item.first, item.second, nullptr, nullptr));
+            pair<Node *, int> node;
+            node.first = getNode(item.first, item.second, nullptr, nullptr);
+            node.second = 0;
+            pq.push(node);
         }
         // debugPQ(pq);
+        int order = 0;
         while (pq.size() != 1)
         {
-            Node *left = pq.top();
+            Node *left = pq.top().first;
             pq.pop();
-            Node *right = pq.top();
+            Node *right = pq.top().first;
             pq.pop();
             // cout << left->ch << right->ch << endl;
             int sum = left->freq + right->freq;
-            pq.push(getNode('~', sum, left, right));
+
+            pq.push(make_pair(getNode('~', sum, left, right), ++order));
             // debugPQ(pq);
         }
 
-        Node *root = pq.top();
+        Node *root = pq.top().first;
 
         unordered_map<char, string> huffmanCode;
         encode(root, "", huffmanCode);
@@ -101,26 +107,26 @@ public:
         else
             decode(root->right, index, str);
     }
-    void debugPQ(
-        priority_queue<Node *, vector<Node *>, comparator> gq)
-    {
-        priority_queue<Node *, vector<Node *>, comparator> g = gq;
+    // void debugPQ(
+    // 	priority_queue<Node *, vector<Node *>, comparator> gq)
+    // {
+    // 	priority_queue<Node *, vector<Node *>, comparator> g = gq;
 
-        while (!g.empty())
-        {
-            cout << ' ' << g.top()->freq << "" << g.top()->ch;
-            if (g.top()->left != NULL)
-            {
-                cout << g.top()->left->ch;
-            }
-            if (g.top()->right != NULL)
-            {
-                cout << g.top()->right->ch;
-            }
-            g.pop();
-        }
-        cout << '\n';
-    }
+    // 	while (!g.empty())
+    // 	{
+    // 		cout << ' ' << g.top()->freq << "" << g.top()->ch;
+    // 		if (g.top()->left != NULL)
+    // 		{
+    // 			cout << g.top()->left->ch;
+    // 		}
+    // 		if (g.top()->right != NULL)
+    // 		{
+    // 			cout << g.top()->right->ch;
+    // 		}
+    // 		g.pop();
+    // 	}
+    // 	cout << '\n';
+    // }
 
 public:
     class Node
@@ -143,30 +149,30 @@ public:
     };
     struct comparator
     {
-        bool operator()(Node *a, Node *b)
+        bool operator()(pair<Node *, int> a, pair<Node *, int> b)
         {
-            if (a->freq == b->freq)
+            if (a.first->freq == b.first->freq)
             {
-                if (a->ch == b->ch)
-                    return a > b;
-                return a->ch > b->ch;
+                if (a.first->ch == b.first->ch)
+                    return a.second > b.second;
+                return a.first->ch > b.first->ch;
             }
-            return a->freq > b->freq;
+            return a.first->freq > b.first->freq;
         }
     };
 };
-#define outtext freopen("output.txt", "w", stdout)
-// Huffman coding algorithm
-int main()
-{
-    outtext;
-    HuffmanCoding huffman;
-    string text = "Johnuigfifbahjasbdfhjbasdhjf";
-    string text1 = "iuasgfuigweibjaskdfbjksadf";
-    string huffman1 = huffman.HuffmanTree(text);
-    cout << huffman1 << endl;
-    string huffman2 = huffman.HuffmanTree(text1);
-    cout << huffman2 << endl;
+// #define outtext freopen("output.txt", "w", stdout)
+// // Huffman coding algorithm
+// int main()
+// {
+//     outtext;
+//     HuffmanCoding huffman;
+//     string text = "Johnuigfifbahjasbdfhjbasdhjf";
+//     string text1 = "iuasgfuigweibjaskdfbjksadf";
+//     string huffman1 = huffman.HuffmanTree(text);
+//     cout << huffman1 << endl;
+//     string huffman2 = huffman.HuffmanTree(text1);
+//     cout << huffman2 << endl;
 
-    return 0;
-}
+//     return 0;
+// }

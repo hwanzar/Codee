@@ -1,28 +1,59 @@
-== HUFFMAN ==
+== Debug HUFFMAN ==
 010111101010100
 12116
-== HUFFMAN ==
+== Debug HUFFMAN ==
 101000011011010
 20698
-== HUFFMAN ==
+== Debug HUFFMAN ==
 011110111110101
 15861
-== HUFFMAN ==
+== Debug HUFFMAN ==
 101011011001000
 22216
-== HUFFMAN ==
+== Debug HUFFMAN ==
 111010010101110
 29870
-== HUFFMAN ==
+== Debug HUFFMAN ==
 011111110010011
 16275
-== HUFFMAN ==
+== Debug HUFFMAN ==
 101000110101110
 20910
-== HUFFMAN ==
+== Debug HUFFMAN ==
 001111110011101
 8093
-Command written
-Command Print Hash Table written
+== Debug HUFFMAN ==
+011111111111111
+16383
+== Debug HUFFMAN ==
+011111111111111
+16383
+Command CLE written
+==== AREA 1 - HASH TABLE ====
+0 32: 16383
+1 0: 0
+2 0: 0
+3 20: 16275
+4 0: 0
+5 22: 15861
+6 0: 0
+7 0: 0
+8 0: 0
+9 0: 0
+10 0: 0
+11 0: 0
+12 0: 0
+13 30: 8093
+14 0: 0
+15 32: 16383
+=============================
 Command Print AVL tree written
+==> AREA 2 - AVL(BFT) <==
+Result (KEY): 20698    27
+Result (KEY): 12116    21
+Result (KEY): 22216    9
+Result (KEY): 20910    15
+Result (KEY): 29870    15
+=======================
 Command Print Min Heap written
+

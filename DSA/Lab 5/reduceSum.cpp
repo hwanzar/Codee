@@ -26,15 +26,23 @@ int reduceSum(vector<int> &nums)
 int ReducedSum(vector<int> &nums)
 {
     int cost = 0;
-    priority_queue<int> pq;
+    priority_queue<int, vector<int>, greater<int>> pq;
     for (auto x : nums)
     {
         pq.push(x);
     }
+
     while (pq.size() != 1)
     {
-        
+        int num1 = pq.top();
+        pq.pop();
+        int num2 = pq.top();
+        pq.pop();
+        int sum = num1 + num2;
+        cost += sum;
+        pq.push(sum);
     }
+    return cost;
 }
 
 int main()
@@ -42,6 +50,7 @@ int main()
     outtext;
     _io;
     vector<int> nums{1, 2, 3, 4};
-    cout << reduceSum(nums) << endl;
+    // cout << reduceSum(nums) << endl;
+    cout << ReducedSum(nums) << endl;
     return 0;
 }
