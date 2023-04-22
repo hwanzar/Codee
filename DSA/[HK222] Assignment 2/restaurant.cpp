@@ -5,9 +5,12 @@
 #include "demoCode/demo_hashTable.cpp"
 
 /*----------DEFINE DATA STRUCTURE-------------*/
-
-AVL area2; // area2 AVL
+unordered_map<string, table *> restaurant;
+queue<table *> fifo;
+vector<table *> lrco;
 HashTable area1;
+AVL area2; // area2 AVL
+
 /*=== REG Command ===*/
 // helper function
 string getCommand(string input)
@@ -48,15 +51,8 @@ string getName(string input)
 int getID(int res)
 {
 	int ID = res % MAXSIZE + 1;
-	while (true)
-	{
-		if (ID > MAXSIZE)
-			return 1;
-		if (area2.containsID(ID))
-			ID++;
-		return ID;
-	}
 	return ID;
+	// return ID;
 }
 
 int getOPT(int res)
@@ -92,7 +88,21 @@ int SelectArea(int res)
 
 void regFull()
 {
+	// FIFO
+
+	// LRCO
+
+	// LFCO
 	return;
+}
+bool checkName(unordered_map<string, table *> restaurant, string name)
+{
+	for (auto pair : restaurant)
+	{
+		if (pair.second->name == name)
+			return true;
+	}
+	return false;
 }
 
 void reg(string input)
@@ -109,21 +119,53 @@ void reg(string input)
 
 	// get full information:
 	int ID = getID(Result);
+	while (true)
+	{
+		if (ID > MAXSIZE)
+			ID = 1;
+		if (!area2.containsID(ID) && !area1.containsID(ID))
+			break;
+		else
+			ID++;
+	}
 
 	int select_area = SelectArea(Result);
-
-	table *tb = new table(ID, name, Result, 1);
 	if (select_area == 3)
-		return regFull();
-	if (select_area == 1)
+		regFull();
+
+	else if (!checkName(restaurant, name))
 	{
-		area1.insert(tb->result, tb);
+		while (true)
+		{
+			if (ID > MAXSIZE)
+				ID = 1;
+			if (!area2.containsID(ID) && !area1.containsID(ID))
+				break;
+			else
+				ID++;
+		}
+		table *tb = new table(ID, name, Result, 1);
+		restaurant[name] = tb;
+		fifo.push(tb);
+
+		if (select_area == 1)
+		{
+			area1.insert(tb->result, tb);
+		}
+		if (select_area == 2)
+		{
+			area2.addAVLTree(tb->result, tb);
+		}
 	}
-	if (select_area == 2)
+	else
 	{
-		area2.addAVLTree(tb->result, tb);
+		restaurant[name]->dish++;
 	}
 
+	// function: checkName in the restaurant. if has name, no FIFO, add dish to LRCO.
+	// function:
+	// Deque FIFO. checkName in list.
+	// Deque LRCO. update the dish in list.
 	return;
 }
 /*=== END REG Command ===*/
@@ -157,15 +199,12 @@ void printHT(string inp)
 // main function
 void printAVL(string inp)
 {
-	cout << "Command Print AVL tree written" << endl;
 	cout << area2.printBFT();
 	return;
 }
 
 /*=== END printAVL Command ===*/
-//
-//
-//
+
 /*=== START printMH Command ===*/
 // helper function
 

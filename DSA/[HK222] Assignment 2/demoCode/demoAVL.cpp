@@ -245,6 +245,7 @@ public:
     }
     bool contains(Node *root, int ID)
     {
+
         if (root == nullptr)
         {
             return false; // The tree is empty, so the element is not in the tree
@@ -253,14 +254,18 @@ public:
         {
             return true; // Found the element
         }
-        else if (root->tb->id > ID)
-        {
-            return contains(root->left, ID); // Recurse on the left subtree
-        }
-        else
-        {
-            return contains(root->right, ID); // Recurse on the right subtree
-        }
+
+        bool containedLeft = false;
+        containedLeft = contains(root->right, ID);
+        if (containedLeft == 1)
+            return containedLeft;
+
+        bool containedRight = false;
+        containedRight = contains(root->left, ID);
+        if (containedRight == 1)
+            return containedRight;
+
+        return false;
     }
     bool containsID(int ID)
     {
@@ -293,14 +298,28 @@ public:
 // {
 //     // outtext;
 //     AVL avl;
-//     for (int i = 0; i < 12; i++)
-//     {
-//         table *tb = new table(i, "Gia", i, 1);
+//     // for (int i = 0; i < 12; i++)
+//     // {
+//     //     table *tb = new table(i, "Gia", i, 1);
 
-//         avl.addAVLTree(i, tb);
-//     }
+//     //     avl.addAVLTree(i, tb);
+//     // }
+//     table *tb = new table(27, "Gia", 20698, 1);
+//     table *tb2 = new table(21, "Gia", 12116, 1);
+//     table *tb3 = new table(9, "Gia", 22216, 1);
+//     table *tb4 = new table(15, "Gia", 20910, 1);
+//     table *tb5 = new table(15, "Gia", 29870, 1);
+//     table *tb6 = new table(38, "Gia", 100, 1);
+//     table *tb7 = new table(29, "Gia", 30000, 1);
+//     avl.addAVLTree(tb->result, tb);
+//     avl.addAVLTree(tb2->result, tb2);
+//     avl.addAVLTree(tb4->result, tb4);
+//     avl.addAVLTree(tb3->result, tb3);
+//     avl.addAVLTree(tb5->result, tb5);
+//     avl.addAVLTree(tb6->result, tb6);
+//     avl.addAVLTree(tb7->result, tb7);
 //     cout << avl.toStringPreOrder() << '\n';
 //     avl.deleteAVLTree(0);
 //     // cout << avl.size();
-//     cout << avl.containsID(5);
+//     cout << avl.containsID(38);
 // }

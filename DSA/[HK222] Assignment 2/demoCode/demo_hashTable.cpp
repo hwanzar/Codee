@@ -67,6 +67,20 @@ public:
             return true;
         return false;
     }
+    bool containsID(int ID)
+    {
+        if (ID == 0)
+            return false;
+        for (int key = 0; key < MAXSIZE / 2; key++)
+        {
+
+            if (hashTable[key]->id == ID)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 };
 
 // int main()

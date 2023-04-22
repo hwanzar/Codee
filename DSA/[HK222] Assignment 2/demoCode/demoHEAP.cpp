@@ -131,13 +131,13 @@ int main()
     _io;
     const int NUM_ELEMENTS = 7;
     int arr[NUM_ELEMENTS] = {5, 9, 3, 7, 1, 2, 8};
-    heap<int, Comp> h(arr, NUM_ELEMENTS, NUM_ELEMENTS);
-
+    heap<int, Comp<int>> h(arr, NUM_ELEMENTS, NUM_ELEMENTS);
+    
     cout << "Heap size: " << h.size() << endl;
 
     for (int i = 0; i < NUM_ELEMENTS; i++)
     {
-        cout << h.removefirst()<< " ";
+        cout << h.removefirst() << " ";
     }
     cout << endl;
 
