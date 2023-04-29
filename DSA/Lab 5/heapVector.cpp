@@ -7,6 +7,7 @@ using namespace std;
     cout.tie(NULL)
 #define ln cout << endl;
 // MIN HEAP
+
 void reHeapUp(vector<int> &hp, int pos)
 {
     if (pos < 0)
@@ -40,8 +41,16 @@ int main()
 {
 
     int arr[] = {0, 1, 2, 3, 4, 5, 6, 7};
-    vector<int> a{8, 7, 6, 5, 4, 3, 2, 1};
-    reHeapUp(a, 1);
+    vector<int> a{7, 6, 8, 5, 4, 3, 2, 1};
+    for (int i = 0; i < a.size(); i++)
+    {
+        reHeapUp(a, i);
+    }
+    // for (int i = 0; i < a.size(); i++)
+    // {
+    //     reHeapDown(a, i);
+    // }
+
     for (int i = 0; i < a.size(); i++)
     {
         cout << a[i] << endl;

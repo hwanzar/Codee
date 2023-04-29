@@ -17,13 +17,13 @@ public:
         root = nullptr;
         cnt = 0;
     }
-    ~AVL()
-    {
-        while (root != nullptr)
-        {
-            deleteAVLTree(root->key);
-        }
-    }
+    // ~AVL()
+    // {
+    //     while (root != nullptr)
+    //     {
+    //         deleteAVLTree(root->key);
+    //     }
+    // }
 
 public:
     int height(Node *root)
@@ -80,7 +80,7 @@ public:
         root->bal_factor = getBalanceFactor(root);
         if (root->bal_factor > 1)
         {
-            if (getBalanceFactor(root->left) > 0)
+            if (getBalanceFactor(root->left) >= 0)
             {
                 root = rightRotate(root);
             }
@@ -132,21 +132,30 @@ public:
         }
         return temp;
     }
-    Node *deleteAVL(Node *root, int key)
+    Node *findMinValueRight(Node *x)
+    {
+        Node *temp = x;
+        while (temp->left != nullptr)
+        {
+            temp = temp->left;
+        }
+        return temp;
+    }
+    Node *deleteAVL(Node *root, int key, string name)
     {
         if (root == nullptr)
         {
             return nullptr;
         }
-        if (key < root->key)
+        if (key <= root->key && name != root->tb.name)
         {
-            root->left = deleteAVL(root->left, key);
+            root->left = deleteAVL(root->left, key, name);
         }
-        else if (key > root->key)
+        if (key >= root->key && name != root->tb.name)
         {
-            root->right = deleteAVL(root->right, key);
+            root->right = deleteAVL(root->right, key, name);
         }
-        else
+        if (key == root->key && name == root->tb.name)
         {
             if (root->left == nullptr || root->right == nullptr)
             {
@@ -167,13 +176,64 @@ public:
             }
             else
             {
-                Node *temp = findMaxValue(root->left);
+                Node *temp = root->right;
+                while (temp->left != nullptr)
+                {
+                    temp = temp->left;
+                }
+                // cout << root->key << endl;
+                // cout << temp->key << endl;
                 root->key = temp->key;
-                root->left = deleteAVL(root->left, temp->key);
+                root->tb = temp->tb;
+
+                root->right = deleteAVL(root->right, temp->key, temp->tb.name);
             }
         }
         return balanced(root);
     }
+
+    bool addDish(Node *cur, int key, string name)
+    {
+        if (cur == nullptr)
+            return false;
+        if (cur->key == key)
+        {
+            if (cur->tb.name == name)
+            {
+                cur->tb.dish++;
+                return true;
+            }
+            else
+            {
+                addDish(cur->right, key, name);
+            }
+        }
+        else
+        {
+            if (key < cur->key)
+            {
+                return addDish(cur->left, key, name);
+            }
+            else
+            {
+                return addDish(cur->right, key, name);
+            }
+        }
+        return false;
+    }
+    void AddDish(int key, string name)
+    {
+        addDish(root, key, name);
+    }
+
+    void changeInfo(table &oldTable, table &newTable)
+    {
+        if (!contains(root, oldTable.id))
+            return;
+        deleteAVLTree(oldTable.result, oldTable.name);
+        addAVLTree(newTable.result, newTable);
+    }
+
     string toStringPreOrder(Node *root, string ans = "") const
     {
         if (root == nullptr)
@@ -186,10 +246,10 @@ public:
         ans += toStringPreOrder(root->right, ans);
         return ans;
     }
-    string PrintBFT(Node *root, string ans = "") const
+    void PrintBFT(Node *root) const
     {
         if (root == nullptr)
-            return "Nothing";
+            return;
         queue<Node *> q;
         q.push(root);
 
@@ -200,7 +260,9 @@ public:
             {
                 Node *curr = q.front();
                 q.pop();
-                ans += ("Result (KEY): " + to_string(curr->tb.result) + "    " + to_string(curr->tb.id) + "\n");
+
+                // ans += ("Result (KEY): " + to_string(curr->tb.result) + "    " + to_string(curr->tb.id) + "\n");
+                cout << curr->tb.id << "-" << curr->tb.result << "-" << curr->tb.dish << "\n";
                 if (curr->left != nullptr)
                 {
                     q.push(curr->left);
@@ -210,9 +272,7 @@ public:
                     q.push(curr->right);
                 }
             }
-            // ans += "\n";
         }
-        return ans;
     };
 
 public:
@@ -220,9 +280,9 @@ public:
     {
         root = addAVL(root, key, tb);
     }
-    void deleteAVLTree(int key)
+    void deleteAVLTree(int key, string name)
     {
-        root = deleteAVL(root, key);
+        root = deleteAVL(root, key, name);
     }
     int size() const
     {
@@ -236,12 +296,17 @@ public:
 
         return ans + "==================\n";
     }
-    string printBFT() const
+    void printBFTDebug() const
     {
-        string ans = "==> AREA 2 - AVL(BFT) <==\n";
+        cout << "==> AREA 2 - AVL(BFT) <==\n";
 
-        string answer = PrintBFT(root, ans);
-        return answer + "=======================\n";
+        PrintBFT(root);
+        cout << "=======================\n";
+    }
+    void printBFT() const
+    {
+
+        PrintBFT(root);
     }
     bool contains(Node *root, int ID)
     {
@@ -250,18 +315,18 @@ public:
         {
             return false; // The tree is empty, so the element is not in the tree
         }
-        else if (root->tb.id == ID)
+        if (root->tb.id == ID)
         {
             return true; // Found the element
         }
 
         bool containedLeft = false;
-        containedLeft = contains(root->right, ID);
+        containedLeft = contains(root->left, ID);
         if (containedLeft == 1)
             return containedLeft;
 
         bool containedRight = false;
-        containedRight = contains(root->left, ID);
+        containedRight = contains(root->right, ID);
         if (containedRight == 1)
             return containedRight;
 
@@ -293,7 +358,6 @@ public:
         }
     };
 };
-
 // int main()
 // {
 //     // outtext;
@@ -304,22 +368,25 @@ public:
 
 //     //     avl.addAVLTree(i, tb);
 //     // }
-//     table *tb = new table(27, "Gia", 20698, 1);
-//     table *tb2 = new table(21, "Gia", 12116, 1);
-//     table *tb3 = new table(9, "Gia", 22216, 1);
-//     table *tb4 = new table(15, "Gia", 20910, 1);
-//     table *tb5 = new table(15, "Gia", 29870, 1);
-//     table *tb6 = new table(38, "Gia", 100, 1);
-//     table *tb7 = new table(29, "Gia", 30000, 1);
-//     avl.addAVLTree(tb->result, tb);
-//     avl.addAVLTree(tb2->result, tb2);
-//     avl.addAVLTree(tb4->result, tb4);
-//     avl.addAVLTree(tb3->result, tb3);
-//     avl.addAVLTree(tb5->result, tb5);
-//     avl.addAVLTree(tb6->result, tb6);
-//     avl.addAVLTree(tb7->result, tb7);
-//     cout << avl.toStringPreOrder() << '\n';
-//     avl.deleteAVLTree(0);
+//     table tb = table(27, "Gia", 10, 1);
+//     table tb2 = table(21, "gai", 7, 1);
+//     table tb3 = table(9, "as", 15, 1);
+//     table tb4 = table(15, "aa", 5, 1);
+//     table tb5 = table(15, "ddd", 9, 1);
+//     // table tb6 = table(38, "Gia", 12, 1);
+//     // table tb7 = table(29, "Gia", 30000, 1);
+//     avl.addAVLTree(tb.result, tb);
+//     avl.addAVLTree(tb2.result, tb2);
+//     avl.addAVLTree(tb3.result, tb3);
+//     avl.addAVLTree(tb4.result, tb4);
+//     avl.addAVLTree(tb5.result, tb5);
+//     // avl.addAVLTree(tb6.result, tb6);
+//     // avl.addAVLTree(tb7.result, tb7);
+//     avl.AddDish(tb3.result, tb3.name);
+//     avl.printBFT();
+//     avl.deleteAVLTree(10, "Gia");
+//     // cout << avl.toStringPreOrder() << '\n';
+//     avl.printBFT();
 //     // cout << avl.size();
-//     cout << avl.containsID(38);
+//     // cout << avl.containsID(38);
 // }

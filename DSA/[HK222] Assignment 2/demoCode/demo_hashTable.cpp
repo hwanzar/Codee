@@ -12,7 +12,7 @@ public:
     {
         for (int i = 0; i < MAXSIZE / 2; i++)
         {
-            hashTable[i] = table(0, "", 0, 0);
+            hashTable[i] = table(0, "", 0, 0, 0, 0);
         }
         tableCnt = 0;
     }
@@ -25,7 +25,6 @@ public:
     void insert(int key, table tb)
     {
         int newkey = hashFx(key);
-
         while (hashTable[newkey].name != "")
         {
             newkey = (newkey == MAXSIZE - 1) ? 0 : (newkey + 1) % (MAXSIZE / 2);
@@ -36,23 +35,24 @@ public:
     }
     void remove(int id)
     {
-        int key = hashFx(id);
+        // int key = hashFx(id);
+        int key = 0;
 
-        while (hashTable[key].id != id && hashTable[key].name != "")
+        while (hashTable[key].id != id)
         {
-            key = (key == MAXSIZE - 1) ? 0 : (key + 1) % (MAXSIZE / 2);
+            key = (key == MAXSIZE / 2 - 1) ? 0 : key + 1;
         }
 
         if (hashTable[key].id == id)
         {
             // Remove the table object from the hash table
             // delete hashTable[key];
-            hashTable[key] = table(0, "", 0, 0);
+            hashTable[key] = table(0, "", 0, 0, 0, 0);
             tableCnt--;
         }
     }
 
-    void display()
+    void displayDebug()
     {
         cout << "==== AREA 1 - HASH TABLE ====\n";
         for (auto pair : hashTable)
@@ -60,6 +60,16 @@ public:
             cout << pair.first << " " << pair.second.id << ": " << pair.second.result << endl;
         }
         cout << "=============================\n";
+    }
+    void display()
+    {
+        for (auto pair : hashTable)
+        {
+            if (pair.second.name != "")
+            {
+                cout << pair.second.id << "-" << pair.second.result << "-" << pair.second.dish << "\n";
+            }
+        }
     }
     bool isFull()
     {
@@ -80,6 +90,29 @@ public:
             }
         }
         return false;
+    }
+    void AddDish(string name)
+    {
+        for (int i = 0; i < MAXSIZE / 2; i++)
+        {
+            if (hashTable[i].name == name)
+            {
+                hashTable[i].dish++;
+                return;
+            }
+        }
+        return;
+    }
+    void changeInfo(table &oldTable, table &newTable)
+    {
+        for (int i = 0; i < MAXSIZE / 2; i++)
+        {
+            if (hashTable[i].name == oldTable.name)
+            {
+                hashTable[i] = newTable;
+                return;
+            }
+        }
     }
 };
 

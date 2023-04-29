@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <bits/stdc++.h>
 #include <unordered_map>
 using namespace std;
 
@@ -58,9 +59,18 @@ public:
         }
 
         Node *root = pq.top().first;
-
         unordered_map<char, string> huffmanCode;
-        encode(root, "", huffmanCode);
+        if (freq.size() == 1)
+        {
+            for (auto item : freq)
+            {
+                huffmanCode[item.first] = "1";
+            }
+        }
+        else
+        {
+            encode(root, "", huffmanCode);
+        }
 
         // cout << "Encoded\n";
         // for (auto pair : huffmanCode)
@@ -161,18 +171,33 @@ public:
         }
     };
 };
-// #define outtext freopen("output.txt", "w", stdout)
-// // Huffman coding algorithm
+// int BinToDec(string binary)
+// {
+//     long long decimal = 0;
+//     for (int i = 0; i < binary.length(); i++)
+//     {
+//         if (binary[i] == '1')
+//         {
+//             decimal += (int)pow(2, binary.length() - 1 - i);
+//         }
+//     }
+//     return decimal;
+// }
+#define outtext freopen("output.txt", "w", stdout)
+// Huffman coding algorithm
 // int main()
 // {
 //     outtext;
 //     HuffmanCoding huffman;
 //     string text = "Johnuigfifbahjasbdfhjbasdhjf";
-//     string text1 = "iuasgfuigweibjaskdfbjksadf";
+//     string text1 = "aaaaaaaaaa";
 //     string huffman1 = huffman.HuffmanTree(text);
 //     cout << huffman1 << endl;
 //     string huffman2 = huffman.HuffmanTree(text1);
 //     cout << huffman2 << endl;
-
+//     string newName = huffman2;
+//     cout << newName << endl;
+//     int ans = BinToDec(newName);
+//     cout << ans << endl;
 //     return 0;
 // }

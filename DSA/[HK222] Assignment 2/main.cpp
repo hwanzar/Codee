@@ -1,5 +1,5 @@
 #include "main.h"
-#include "restaurant.cpp"
+#include "debug_restaurant.cpp"
 
 #define outtext freopen("output.txt", "w", stdout)
 #define _io                           \
@@ -11,7 +11,8 @@ int main(int argc, char *argv[])
 {
     outtext;
     // string fileName = "test_demo_input.txt";
-    string fileName = "test.txt";
+    // string fileName = "test.txt";
+    string fileName = "input1.txt";
     simulate(fileName);
 
     return 0;

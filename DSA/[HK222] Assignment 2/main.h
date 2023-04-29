@@ -16,12 +16,20 @@ public:
     string name;
     int result;
     int dish;
-    table(int id = 0, string name = "", int result = 0, int dish = 0)
+    int recentOrder;
+    int typeArea;
+    table(int id = 0, string name = "", int result = 0, int dish = 0, int recentOrder = 0, int typeArea = 0)
     {
         this->id = id;
         this->name = name;
         this->result = result;
         this->dish = dish;
+        this->recentOrder = recentOrder;
+        this->typeArea = typeArea;
+    }
+    bool operator==(table &other)
+    {
+        return id == other.id && name == other.name;
     }
 };
 #endif
