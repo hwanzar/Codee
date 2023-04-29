@@ -30,7 +30,7 @@ bool findPairs(int arr[], int n, pair<int, int> &pair1, pair<int, int> &pair2)
                         pair2.second = arr[n];
                         return true;
                     }
-                                }
+                }
             }
             map[sum].push_back({i, j});
         }
