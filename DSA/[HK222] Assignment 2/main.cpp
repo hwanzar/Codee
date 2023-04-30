@@ -9,11 +9,17 @@
 
 int main(int argc, char *argv[])
 {
-    outtext;
+    for (int i = 0; i < 20; i++)
+    {
+        string fileName = "input" + to_string(i) + ".txt";
+        string str_i = to_string(i);
+        const char *got = ("got" + str_i + ".txt").c_str();
+        freopen(got, "w", stdout);
+        simulate(fileName);
+    }
+    
     // string fileName = "test_demo_input.txt";
     // string fileName = "test.txt";
-    string fileName = "input1.txt";
-    simulate(fileName);
 
     return 0;
 }

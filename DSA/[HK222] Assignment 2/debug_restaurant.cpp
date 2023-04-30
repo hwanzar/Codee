@@ -1172,13 +1172,17 @@ void cle(string inp)
                 area1.remove(fifo[i].id);
             }
         }
-        for (int i = 0; i < fifo.size(); i++)
+        while (!toBeDelete.empty())
         {
-            if (fifo[i].name == toBeDelete.front().name)
+            for (int i = 0; i < fifo.size(); i++)
             {
-                fifo.erase(fifo.begin() + i);
-                toBeDelete.pop();
+                if (toBeDelete.front().name == fifo[i].name)
+                {
+                    fifo.erase(fifo.begin() + i);
+                    break;
+                }
             }
+            toBeDelete.pop();
         }
     }
     else if (NUM > MAXSIZE)
@@ -1204,19 +1208,28 @@ void cle(string inp)
                     }
                     lrcoIndex++;
                 }
+                // cout << lfco.findIndex(x.name) << " ";
+                // if (lfco.findIndex(x.name) == -1)
+                // {
+                //     cout << x.name << endl;
+                // }
                 lfco.remove(lfco.findIndex(x.name));
                 listName.erase(x.name);
                 area2.deleteAVLTree(x.result, x.name);
                 toBeDelete.push(x);
             }
         }
-        for (int i = fifo.size(); i >= 0; i--)
+        while (!toBeDelete.empty())
         {
-            if (fifo[i].name == toBeDelete.front().name)
+            for (int i = 0; i < fifo.size(); i++)
             {
-                fifo.erase(fifo.begin() + i);
-                toBeDelete.pop();
+                if (toBeDelete.front().name == fifo[i].name)
+                {
+                    fifo.erase(fifo.begin() + i);
+                    break;
+                }
             }
+            toBeDelete.pop();
         }
     }
     else
@@ -1316,6 +1329,9 @@ void simulate(string filename)
         area2.cnt = 0;
         area1.tableCnt = 0;
         area1.hashTable.clear();
+
+        int numLine = 1;
+
         for (int i = 0; i < MAXSIZE / 2; i++)
         {
             area1.hashTable[i] = table(0, "", 0, 0, 0, 0);
