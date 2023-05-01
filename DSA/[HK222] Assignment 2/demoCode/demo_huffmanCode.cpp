@@ -10,7 +10,9 @@ class HuffmanCoding
 public:
     class Node;
     struct comparator;
+    Node *root;
 
+public:
     Node *getNode(char ch, int freq, Node *left, Node *right)
     {
         Node *node = new Node();
@@ -53,8 +55,8 @@ public:
             pq.pop();
             // cout << left->ch << right->ch << endl;
             int sum = left->freq + right->freq;
-
             pq.push(make_pair(getNode('~', sum, left, right), ++order));
+
             // debugPQ(pq);
         }
 
@@ -82,6 +84,8 @@ public:
         {
             result += huffmanCode[ch];
         }
+
+        delete root;
         return result;
     }
 
@@ -117,6 +121,14 @@ public:
         else
             decode(root->right, index, str);
     }
+    void clear(Node *node)
+    {
+        if (!node)
+            return;
+        clear(node->left);
+        clear(node->right);
+        delete node;
+    }
     // void debugPQ(
     // 	priority_queue<Node *, vector<Node *>, comparator> gq)
     // {
@@ -147,10 +159,19 @@ public:
         Node *left, *right;
 
     public:
-        Node()
+        // Node()
+        // {
+        //     this->ch = ch;
+        //     this->freq = freq;
+        // }
+        Node(char c = '\0', int f = 0, Node *l = nullptr, Node *r = nullptr)
+            : ch(c), freq(f), left(l), right(r)
         {
-            this->ch = ch;
-            this->freq = freq;
+        }
+        ~Node()
+        {
+            delete left;
+            delete right;
         }
         bool isLeaf()
         {
@@ -171,33 +192,33 @@ public:
         }
     };
 };
-// int BinToDec(string binary)
-// {
-//     long long decimal = 0;
-//     for (int i = 0; i < binary.length(); i++)
-//     {
-//         if (binary[i] == '1')
-//         {
-//             decimal += (int)pow(2, binary.length() - 1 - i);
-//         }
-//     }
-//     return decimal;
-// }
+int BinToDec(string binary)
+{
+    long long decimal = 0;
+    for (int i = 0; i < binary.length(); i++)
+    {
+        if (binary[i] == '1')
+        {
+            decimal += (int)pow(2, binary.length() - 1 - i);
+        }
+    }
+    return decimal;
+}
 #define outtext freopen("output.txt", "w", stdout)
 // Huffman coding algorithm
-// int main()
-// {
-//     outtext;
-//     HuffmanCoding huffman;
-//     string text = "Johnuigfifbahjasbdfhjbasdhjf";
-//     string text1 = "aaaaaaaaaa";
-//     string huffman1 = huffman.HuffmanTree(text);
-//     cout << huffman1 << endl;
-//     string huffman2 = huffman.HuffmanTree(text1);
-//     cout << huffman2 << endl;
-//     string newName = huffman2;
-//     cout << newName << endl;
-//     int ans = BinToDec(newName);
-//     cout << ans << endl;
-//     return 0;
-// }
+int main()
+{
+    outtext;
+    HuffmanCoding huffman;
+    string text = "Johnuigfifbahjasbdfhjbasdhjf";
+    string text1 = "aaaaaaaaaa";
+    string huffman1 = huffman.HuffmanTree(text);
+    cout << huffman1 << endl;
+    string newName = huffman1;
+    newName = newName.substr(newName.length() - 15, newName.length());
+    cout << newName << endl;
+    int ans = BinToDec(newName);
+    cout << ans << endl;
+    huffman.clear(huffman.root);
+    return 0;
+}
