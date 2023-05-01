@@ -738,6 +738,7 @@ public:
         }
         swap(heapArray[pos], heapArray[size - 1]);
         heapArray.pop_back();
+        reheapUp(pos);
         reheapDown(pos);
     }
 
@@ -762,7 +763,7 @@ public:
     // Reheap Up
     void reheapUp(int pos)
     {
-        if (pos <= 0)
+        if (pos <= 0 || pos >= heapArray.size())
             return;
         int parent = (pos - 1) / 2;
         if ((pos > 0 && heapArray[pos].dish < heapArray[parent].dish) || (heapArray[pos].dish == heapArray[parent].dish && heapArray[pos].recentOrder < heapArray[parent].recentOrder))
@@ -864,10 +865,11 @@ int RecOrder = 0;
 string getCommand(string input)
 {
     int pos = input.find(" ");
+    if (pos == string::npos)
+        return "invalid command";
     string command = input.substr(0, pos);
     return command;
 }
-
 int BinToDec(string binary)
 {
     long long decimal = 0;
@@ -882,25 +884,31 @@ int BinToDec(string binary)
 }
 string getName(string input)
 {
-    string lastWord;
-    size_t pos = input.find_last_of(' ');
-    if (pos != string::npos)
-    {
-        lastWord = input.substr(pos + 1);
-    }
-    else
-    {
-        lastWord = input;
-    }
-    return lastWord;
-}
 
+    // string command = getCommand(input);
+    int pos = input.find(" ");
+    if (pos == string::npos)
+    {
+        return "invalid name";
+    }
+    string name = input.substr(pos + 1);
+
+    string ans = "";
+    for (int i = 0; i < name.length(); i++)
+    {
+        if (!isalpha(name[i]))
+        {
+            return "invalid name";
+        }
+        ans += name[i];
+    }
+    return ans;
+}
 // 3. Chọn bàn
 int getID(int res)
 {
     int ID = res % MAXSIZE + 1;
     return ID;
-    // return ID;
 }
 
 int SelectArea(int res)
@@ -941,8 +949,13 @@ bool checkName(unordered_map<string, table> restaurant, string name)
 
 void reg(string input)
 {
-    HuffmanCoding *huffman = new HuffmanCoding();
+
     string name = getName(input);
+    if (name == "invalid name")
+    {
+        return;
+    }
+    HuffmanCoding *huffman = new HuffmanCoding();
     string binaryName = huffman->HuffmanTree(name);
     int binNameLen = binaryName.length();
     string newName = (binNameLen > 15) ? binaryName.substr(binNameLen - 15) : binaryName;
@@ -1344,48 +1357,64 @@ void simulate(string filename)
     if (file.is_open())
     {
         string line;
+        int numLine = 1;
+
+        while (getline(file, line))
+        {
+            int check = line.find(" ");
+            if (check != string::npos)
+            {
+                string command = getCommand(line);
+                if (command == "invalid command")
+                {
+                    continue;
+                }
+                else if (command == "REG")
+                {
+                    reg(line);
+                }
+                else if (command == "CLE")
+                {
+                    cle(line);
+                }
+            }
+            else if (check == string::npos)
+            {
+                if (line == "PrintHT")
+                {
+                    printHT(line);
+                }
+                if (line == "PrintAVL")
+                {
+                    printAVL(line);
+                }
+                if (line == "PrintMH")
+                {
+                    printMH(line);
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+        file.close();
         fifo.clear();
         lrco.clear();
         lfco.heapArray.clear();
         lfco.capacity = MAXSIZE;
         listName.clear();
         RecOrder = 0;
+        area2.clear();
         area2.root = nullptr;
         area2.cnt = 0;
         area1.tableCnt = 0;
         area1.hashTable.clear();
 
-        int numLine = 1;
-
         for (int i = 0; i < MAXSIZE / 2; i++)
         {
             area1.hashTable[i] = table(0, "", 0, 0, 0, 0);
         }
-        while (getline(file, line))
-        {
-            string command = getCommand(line);
-            if (command == "REG")
-            {
-                reg(line);
-            }
-            if (command == "CLE")
-            {
-                cle(line);
-            }
-            if (command == "PrintHT")
-            {
-                printHT(line);
-            }
-            if (command == "PrintAVL")
-            {
-                printAVL(line);
-            }
-            if (command == "PrintMH")
-            {
-                printMH(line);
-            }
-        }
-        file.close();
     }
     else
         cout << "Not found FILE" << endl;

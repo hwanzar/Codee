@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     //     freopen(got, "w", stdout);
     //     simulate(fileName);
     // }
-    // outtext;
+    outtext;
     string fileName = "input10.txt";
     // string fileName = "test.txt";
     simulate(fileName);
