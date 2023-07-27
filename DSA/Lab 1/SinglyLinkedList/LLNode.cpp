@@ -1,3 +1,4 @@
+//#include <iostream>
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -38,45 +39,13 @@ public:
         cout << "]" << std::endl;
     }
 
-    static LLNode *addLinkedList(LLNode *l0, LLNode *l1)
-    {
-        // Create a dummy node for the result
-        LLNode *dummy = new LLNode();
-        // Create a pointer to the result node
-        LLNode *cur = dummy;
-        // Initialize carry to zero
-        int carry = 0;
+    static LLNode* addLinkedList(LLNode* l0, LLNode* l1) {
+        LLNode* resHead = new LLNode();
+        LLNode* cur = resHead;
 
-        // Loop over the two input lists until both are exhausted
-        while (l0 != nullptr || l1 != nullptr)
-        {
-            // Extract the values of the current nodes and compute the sum
-            int v0 = (l0 != nullptr) ? l0->val : 0;
-            int v1 = (l1 != nullptr) ? l1->val : 0;
-            int sum = v0 + v1 + carry;
-
-            // Compute the carry for the next iteration
-            carry = sum / 10;
-
-            // Create a new node for the current digit
-            cur->next = new LLNode(sum % 10, nullptr);
-
-            // Update the pointers to the current nodes
-            if (l0 != nullptr)
-                l0 = l0->next;
-            if (l1 != nullptr)
-                l1 = l1->next;
-            cur = cur->next;
+        if (!l0 || !l1) {
+            return 
         }
-
-        // If there is a carry at the end, add a new node for it
-        if (carry > 0)
-        {
-            cur->next = new LLNode(carry, nullptr);
-        }
-
-        // Return the result node
-        return dummy->next;
     }
 
     void clear()
