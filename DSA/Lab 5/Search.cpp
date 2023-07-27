@@ -83,10 +83,10 @@ int main()
     // int result = interpolationSearch(arr, 0, n - 1, x);
     // (result == -1) ? cout << "Element is not present in array"
     //                : cout << "Element is present at index " << result;
-    int arr[] = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610};
-    int x = 55;
+    int arr[] = {1, 5, 7, 8, 16, 30, 33, 5, 41, 49, 51, 52, 59, 61, 65, 68, 69, 71, 72, 75, 76, 83, 85, 89, 97};
+    int x = 49;
     int n = sizeof(arr) / sizeof(arr[0]);
-    int index = jumpSearch(arr, x, n);
+    int index = interpolationSearch(arr, 0, 24, x);
 
     if (index != -1)
     {

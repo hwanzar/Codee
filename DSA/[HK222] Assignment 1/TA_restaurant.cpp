@@ -1005,7 +1005,7 @@ void sq(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
     }
 
     DLL::Node *p = Squeue->head;
-    cout << "debug***" << p->age << endl;
+    // cout << "debug***" << p->age << endl;
     for (int i = 0; i < Squeue->size(); i++)
     {
         cout << p->name << endl;

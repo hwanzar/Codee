@@ -147,52 +147,42 @@ int largestValue(BTNode *root)
     return max;
 }
 // largestDiff
-void findMax(BTNode *node, int base, vector<int> &max)
-{
-    if (node == NULL)
-        return;
-    max.push_back(abs(node->val - base));
-
-    if (node->left == NULL && node->right == NULL)
-    {
+void findDiff(BTNode *node, int base, vector<int> &diff){
+    if(node == nullptr) return;
+    diff.push_back(abs(node->val - base));
+    if(node->left == nullptr && node->right == nullptr){
         return;
     }
-    else
-    {
-        findMax(node->left, base, max);
-        findMax(node->right, base, max);
+    else{
+        findDiff(node->left, base, diff);
+        findDiff(node->right, base, diff);
     }
 }
-
-int largestDiff(BTNode *root)
-{
-    if (root == NULL)
-        return 0;
-    vector<int> max;
+int largestDiff(BTNode *root){
+    if(root == nullptr) return 0;
+    vector<int> diff;
     queue<BTNode *> q;
     q.push(root);
-    while (!q.empty())
-    {
-        BTNode *cur = q.front();
-        int base = cur->val;
-        q.pop();
-        findMax(cur, base, max);
 
-        if (cur->left != NULL)
-            q.push(cur->left);
-        if (cur->right != NULL)
-            q.push(cur->right);
-    }
-    int maxOfMax = max[0];
-    for (auto x : max)
-    {
-        if (x > maxOfMax)
-        {
-            maxOfMax = x;
+    while(!q.empty()){
+        BTNode *node = q.front();
+        int base = node->val;
+        q.pop();
+
+        findDiff(node, base, diff);
+
+        if(node->left != nullptr){
+            q.push(node->left);
+        }
+        if(node->right != nullptr){
+            q.push(node->right);
         }
     }
-
-    return maxOfMax;
+    int max = diff[0];
+    for(auto x : diff){
+        if(max < x) max = x;
+    }
+    return max;
 }
 
 // sumDigitPath
@@ -255,51 +245,27 @@ int lowestAncestor(BTNode *root, int a, int b)
 }
 
 // ===== longestPathSum =====
-
-int sumPath(vector<int> a)
-{
+int sumPath(vector<int> path){
     int sum = 0;
-    for (auto k : a)
-    {
-        sum += k;
+    for(auto x : path){
+        sum += x;
     }
     return sum;
 }
 
-vector<int> longestPath(BTNode *root)
-{
-    if (root == NULL)
-    {
+vector<int> longestPath(BTNode *root){
+    if(root == nullptr){
         vector<int> nothing = {};
         return nothing;
     }
-    vector<int> leftPath = longestPath(root->left);
-    vector<int> rightPath = longestPath(root->right);
-
-    // compare
-
-    leftPath.push_back(root->val);
-
-    rightPath.push_back(root->val);
-    // return (leftPath.size() > rightPath.size()) ? leftPath : rightPath;
-    if (leftPath.size() > rightPath.size())
-        return leftPath;
-    else if (leftPath.size() == rightPath.size())
-    {
-        if (sumPath(leftPath) > sumPath(rightPath))
-            return leftPath;
-        else
-            return rightPath;
-    }
-    return rightPath;
+    
 }
 
-int longestPathSum(BTNode *root)
-{
-    int sum = 0;
+int longestPathSum(BTNode *root){
     vector<int> resPath = longestPath(root);
     return sumPath(resPath);
 }
+
 int main()
 {
     _io;

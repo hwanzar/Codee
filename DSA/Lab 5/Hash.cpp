@@ -22,9 +22,9 @@ int foldShift(long long key, int addressSize)
     int result = 0;
     for (int i = 0; i <= k; i++)
     {
-        result += (stoi(ans[i]) % (long long int)pow(10, addressSize));
+        result += (stoi(ans[i]) % (long long)pow(10, addressSize));
     }
-    result %= (long long int)pow(10, addressSize);
+    result %= (long long)pow(10, addressSize);
     return result;
 }
 

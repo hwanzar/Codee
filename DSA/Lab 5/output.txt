@@ -1,1 +1,3 @@
-21
+We traverse on index: 12
+We traverse on index: 10
+We traverse on index: 9

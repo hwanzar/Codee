@@ -38,6 +38,24 @@ bool findPairs(int arr[], int n, pair<int, int> &pair1, pair<int, int> &pair2)
     return false;
 }
 
+bool findPairs(int arr[], int n, pair<int,int>& pair1, pair<int, int>& pair2)
+{
+    map<int, pair<int, int>> Hash;
+    for (int i = 0; i < n - 1; i++) {
+        int a = arr[i];
+        for (int j = i + 1; j < n; j++) {
+            int b = arr[j];
+            auto ret = Hash.insert(pair<int, pair<int,int>>(a + b, pair<int, int>(a, b)));
+            if (ret.second == false) {
+                pair1 = ret.first->second;
+                pair2 = pair<int, int>(a, b);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 int main()
 {
     outtext;

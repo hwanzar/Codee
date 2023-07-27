@@ -34,8 +34,55 @@ public:
     {
         this->next = next;
     }
+    static void reduceDuplicate(Node *root)
+    {
+        Node *cur = root;
+        while (cur != nullptr && cur->getNext() != nullptr)
+        {
+            if (cur->getData() == cur->getNext()->getData())
+            {
+                Node *tmp = cur->getNext();
+                cur->setNext(tmp->getNext());
+                delete tmp;
+            }
+        }
+    }
+    void printList(Node *head)
+    {
+    }
 };
-
+void reduceDuplicate(Node *head)
+{
+    Node *cur = head;
+    while (cur != nullptr && cur->getNext() != nullptr)
+    {
+        if (cur->getData() == cur->getNext()->getData())
+        {
+            Node *tmp = cur->getNext();
+            cur->setNext(tmp->getNext());
+            delete tmp;
+        }
+        else
+        {
+            cur = cur->getNext();
+        }
+    }
+}
+void printList(Node *head)
+{
+    Node *cur = head;
+    cout << "HEAD -> ";
+    while (cur != nullptr)
+    {
+        cout << cur->getData() << " ";
+        cur = cur->getNext();
+        if (cur != nullptr)
+        {
+            cout << "-> ";
+        }
+    }
+    cout << "-> NULL\n";
+}
 int main()
 {
     Node *node1 = new Node(1, nullptr);

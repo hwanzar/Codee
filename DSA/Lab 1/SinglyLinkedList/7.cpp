@@ -50,93 +50,96 @@ public:
         }
     }
 
-    // static LLNode *foldLinkedList(LLNode *head)
-    // {
-    //     if (head == nullptr)
-    //     {
-    //         return head;
-    //     }
-
-    //     vector<int> v;
-    //     LLNode *tmp = head;
-    //     while (tmp != nullptr)
-    //     {
-    //         v.push_back(tmp->val);
-    //         tmp = tmp->next;
-    //     }
-
-    //     int lo = 0;
-    //     int hi = (int)v.size() - 1;
-    //     stack<int> st;
-    //     while (lo <= hi)
-    //     {
-    //         if (lo == hi)
-    //         {
-    //             st.push(v[lo]);
-    //         }
-    //         else
-    //         {
-    //             st.push(v[lo] + v[hi]);
-    //         }
-    //         lo++;
-    //         hi--;
-    //     }
-
-    //     vector<LLNode *> ve;
-    //     while (!st.empty())
-    //     {
-    //         ve.push_back(new LLNode(st.top(), nullptr));
-    //         st.pop();
-    //     }
-    //     int n = (int)ve.size();
-    //     int i = 1;
-    //     LLNode *cur = new LLNode();
-    //     cur = ve[0];
-    //     while (i < n)
-    //     {
-    //         // cout << ve[i]->val << endl;
-    //         cur->next = new LLNode(ve[i]->val, nullptr);
-    //         cur = cur->next;
-    //         i++;
-    //     }
-    //     return ve[0];
-    // }
+    static LLNode *reverseList(LLNode *head)
+    {
+        LLNode *newHead = nullptr;
+        while (head != nullptr)
+        {
+            LLNode *nextHead = head->next;
+            if (newHead == nullptr)
+            {
+                newHead = head;
+                head->next = nullptr;
+            }
+            else
+            {
+                LLNode *tmpNextHead = newHead;
+                newHead = head;
+                newHead->next = tmpNextHead;
+            }
+            head = nextHead;
+        }
+        return newHead;
+    }
     static LLNode *foldLinkedList(LLNode *head)
     {
-        // STUDENT ANSWER
-        // if (head == nullptr || head->next == nullptr)
-        //     return head;
+        if (head == nullptr)
+        {
+            return nullptr;
+        }
+        int size = 0;
+        LLNode *cur = head;
+        LLNode *resTurn = nullptr;
+        while (cur != nullptr)
+        {
+            ++size;
+            cur = cur->next;
+        }
+        if (size == 1)
+            return head;
 
-        LLNode *slow = head;
-        LLNode *fast = head;
-        // Go to the middle node
-        while ((fast->next)->next->next != nullptr)
+        if (size % 2 != 0)
         {
-            slow = slow->next;
-            fast = (fast->next)->next;
+            LLNode *li1 = head;
+            cur = head;
+            int half = size / 2;
+            while (half - 1 > 0)
+            {
+                cur = cur->next;
+                --half;
+            }
+            LLNode *li2 = cur->next->next;
+            LLNode *tempHead = cur->next;
+            tempHead->next = nullptr;
+            cur->next = nullptr;
+            resTurn = tempHead;
+            li1 = reverseList(li1);
+            LLNode *res = tempHead;
+            while (li1 != nullptr)
+            {
+                res->next = new LLNode(li1->val + li2->val, nullptr);
+                li1 = li1->next;
+                li2 = li2->next;
+                res = res->next;
+            }
         }
-        // // Reverse the 2nd half
-        LLNode *prev = new LLNode();
-        LLNode *curr = slow->next;
-        LLNode *next = new LLNode();
-        while (curr != nullptr)
+        else
         {
-            next = curr->next;
-            curr->next = prev;
-            prev = curr;
-            curr = next;
+            LLNode *li1 = head;
+            cur = head;
+            int half = size / 2;
+            while (half - 1 > 0)
+            {
+                cur = cur->next;
+                --half;
+            }
+            LLNode *li2 = cur->next;
+            cur->next = nullptr;
+            li1 = reverseList(li1);
+
+            resTurn = new LLNode(li1->val + li2->val, nullptr);
+            LLNode *res = resTurn;
+            li1 = li1->next;
+            li2 = li2->next;
+            while (li1 != nullptr)
+            {
+                res->next = new LLNode(li1->val + li2->val, nullptr);
+                li1 = li1->next;
+                li2 = li2->next;
+                res = res->next;
+            }
         }
-        slow->next = nullptr;
-        // Merge
-        LLNode *p1 = head;
-        LLNode *p2 = prev;
-        while (p2 != nullptr)
-        {
-            p1->val += p2->val;
-            p1 = p1->next;
-            p2 = p2->next;
-        }
-        return head;
+        return resTurn;
     }
 };
 

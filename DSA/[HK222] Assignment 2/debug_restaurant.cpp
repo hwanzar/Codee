@@ -93,11 +93,6 @@ public:
             encode(root, "", huffmanCode);
         }
 
-        // cout << "Encoded\n";
-        // for (auto pair : huffmanCode)
-        // {
-        // 	cout << pair.first << ": " << pair.second << '\n';
-        // }
         string result = "";
         for (auto ch : inp)
         {
@@ -109,7 +104,6 @@ public:
             delete pq.top().first;
             pq.pop();
         }
-        // delete root;
         return result;
     }
 
@@ -130,16 +124,12 @@ public:
         {
             return;
         }
-
-        // found a leaf node
         if (!root->left && !root->right)
         {
             cout << root->ch;
             return;
         }
-
         index++;
-
         if (str[index] == '0')
             decode(root->left, index, str);
         else
@@ -153,26 +143,6 @@ public:
         clear(node->right);
         delete node;
     }
-    // void debugPQ(
-    // 	priority_queue<Node *, vector<Node *>, comparator> gq)
-    // {
-    // 	priority_queue<Node *, vector<Node *>, comparator> g = gq;
-
-    // 	while (!g.empty())
-    // 	{
-    // 		cout << ' ' << g.top()->freq << "" << g.top()->ch;
-    // 		if (g.top()->left != NULL)
-    // 		{
-    // 			cout << g.top()->left->ch;
-    // 		}
-    // 		if (g.top()->right != NULL)
-    // 		{
-    // 			cout << g.top()->right->ch;
-    // 		}
-    // 		g.pop();
-    // 	}
-    // 	cout << '\n';
-    // }
 
 public:
     class Node
@@ -183,11 +153,6 @@ public:
         Node *left, *right;
 
     public:
-        // Node()
-        // {
-        //     this->ch = ch;
-        //     this->freq = freq;
-        // }
         Node(char c = '\0', int f = 0, Node *l = nullptr, Node *r = nullptr)
             : ch(c), freq(f), left(l), right(r)
         {
@@ -280,7 +245,7 @@ public:
     }
     void display()
     {
-        for (int i = 0; i < hashTable.size(); i++)
+        for (int i = 0; i < (int)hashTable.size(); i++)
         {
             if (hashTable[i].name != "")
             {
@@ -703,7 +668,7 @@ public:
     // Insert an element into the heap
     void insert(table tb)
     {
-        if (heapArray.size() == capacity)
+        if ((int)heapArray.size() == capacity)
         {
             return;
         }
@@ -744,7 +709,7 @@ public:
 
     int findIndex(const string name)
     {
-        for (int i = 0; i < heapArray.size(); i++)
+        for (int i = 0; i < (int)heapArray.size(); i++)
         {
             if (heapArray[i].name == name)
             {
@@ -763,7 +728,7 @@ public:
     // Reheap Up
     void reheapUp(int pos)
     {
-        if (pos <= 0 || pos >= heapArray.size())
+        if (pos <= 0 || pos >= (int)heapArray.size())
             return;
         int parent = (pos - 1) / 2;
         if ((pos > 0 && heapArray[pos].dish < heapArray[parent].dish) || (heapArray[pos].dish == heapArray[parent].dish && heapArray[pos].recentOrder < heapArray[parent].recentOrder))
@@ -780,12 +745,12 @@ public:
     {
         int leftPos = 2 * pos + 1;
         int rightPos = 2 * pos + 2;
-        if (leftPos >= heapArray.size() || pos >= heapArray.size())
+        if (leftPos >= (int)heapArray.size() || pos >= (int)heapArray.size())
             return;
 
-        if (leftPos >= heapArray.size())
+        if (leftPos >= (int)heapArray.size())
             return;
-        if (rightPos >= heapArray.size())
+        if (rightPos >= (int)heapArray.size())
             rightPos = -1;
 
         int smallestPos = 0;
@@ -825,7 +790,7 @@ public:
     }
     void printPreOrderHelper(int index)
     {
-        if (index >= heapArray.size())
+        if (index >= (int)heapArray.size())
         {
             return;
         }
@@ -864,7 +829,7 @@ int RecOrder = 0;
 // helper function
 string getCommand(string input)
 {
-    int pos = input.find(" ");
+    size_t pos = input.find(" ");
     if (pos == string::npos)
         return "invalid command";
     string command = input.substr(0, pos);
@@ -872,8 +837,8 @@ string getCommand(string input)
 }
 int BinToDec(string binary)
 {
-    long long decimal = 0;
-    for (int i = 0; i < binary.length(); i++)
+    int decimal = 0;
+    for (int i = 0; i < (int)binary.length(); i++)
     {
         if (binary[i] == '1')
         {
@@ -886,7 +851,7 @@ string getName(string input)
 {
 
     // string command = getCommand(input);
-    int pos = input.find(" ");
+    size_t pos = input.find(" ");
     if (pos == string::npos)
     {
         return "invalid name";
@@ -894,7 +859,7 @@ string getName(string input)
     string name = input.substr(pos + 1);
 
     string ans = "";
-    for (int i = 0; i < name.length(); i++)
+    for (int i = 0; i < (int)name.length(); i++)
     {
         if (!isalpha(name[i]))
         {
@@ -951,7 +916,7 @@ void reg(string input)
 {
 
     string name = getName(input);
-    if (name == "invalid name")
+    if (name == "invalid name" || name == "")
     {
         return;
     }
@@ -1016,7 +981,7 @@ void reg(string input)
             {
                 // delete
                 table prevTable = fifo[0];
-                for (int i = 0; i < lrco.size(); i++)
+                for (int i = 0; i < (int)lrco.size(); i++)
                 {
                     if (lrco[i].name == prevTable.name)
                     {
@@ -1052,7 +1017,7 @@ void reg(string input)
             else if (opt == 1)
             {
                 table prevTable = lrco[0];
-                for (int i = 0; i < fifo.size(); i++)
+                for (int i = 0; i < (int)fifo.size(); i++)
                 {
                     if (fifo[i].name == prevTable.name)
                     {
@@ -1086,7 +1051,7 @@ void reg(string input)
                 table prevTable = lfco.heapArray[0];
                 lfco.remove(0);
 
-                for (int i = 0; i < fifo.size(); i++)
+                for (int i = 0; i < (int)fifo.size(); i++)
                 {
                     if (fifo[i].name == prevTable.name)
                     {
@@ -1094,7 +1059,7 @@ void reg(string input)
                         break;
                     }
                 }
-                for (int i = 0; i < lrco.size(); i++)
+                for (int i = 0; i < (int)lrco.size(); i++)
                 {
                     if (lrco[i].name == prevTable.name)
                     {
@@ -1128,7 +1093,7 @@ void reg(string input)
         // update LRCO
         listName[name].dish++;
         table tmpTable = listName[name];
-        for (int i = 0; i < fifo.size(); i++)
+        for (int i = 0; i < (int)fifo.size(); i++)
         {
             if (fifo[i].name == name)
             {
@@ -1136,7 +1101,7 @@ void reg(string input)
                 break;
             }
         }
-        for (int i = 0; i < lrco.size(); i++)
+        for (int i = 0; i < (int)lrco.size(); i++)
         {
             if (lrco[i].name == name)
             {
@@ -1166,15 +1131,25 @@ void reg(string input)
 
 /*=== START CLE Command ===*/
 
-int getNum(string inp)
+string getNum(string inp)
 {
     string tempInp = inp;
-    int pos = tempInp.find_last_of(" ");
+    size_t pos = tempInp.find_last_of(" ");
     if (pos != string::npos)
     {
         tempInp = tempInp.substr(pos + 1);
     }
-    return stoi(tempInp);
+    string result = "";
+    try
+    {
+        result = to_string(stoi(tempInp));
+    }
+    catch (const std::invalid_argument &e)
+    {
+        // handle the exception here
+        result = "invalid number";
+    }
+    return result;
 }
 
 // main function
@@ -1187,11 +1162,20 @@ void cle(string inp)
 
     // if (!check)
     // 	return;
-    int NUM = getNum(inp);
+    string strNUM = getNum(inp);
+    int NUM;
+    if (strNUM == "invalid number" || strNUM == "")
+    {
+        return;
+    }
+    else
+    {
+        NUM = stoi(strNUM);
+    }
     if (NUM < 1)
     {
         queue<table> toBeDelete;
-        for (int i = 0; i < fifo.size(); i++)
+        for (int i = 0; i < (int)fifo.size(); i++)
         {
             if (area1.containsID(fifo[i].id))
             {
@@ -1199,7 +1183,7 @@ void cle(string inp)
                 lfco.remove(lfco.findIndex(fifo[i].name));
                 listName.erase(fifo[i].name);
                 // area1.remove(fifo[i].id);
-                for (int j = 0; j < lrco.size(); j++)
+                for (int j = 0; j < (int)lrco.size(); j++)
                 {
                     if (fifo[i].name == lrco[j].name)
                     {
@@ -1212,7 +1196,7 @@ void cle(string inp)
         }
         while (!toBeDelete.empty())
         {
-            for (int i = 0; i < fifo.size(); i++)
+            for (int i = 0; i < (int)fifo.size(); i++)
             {
                 if (toBeDelete.front().name == fifo[i].name)
                 {
@@ -1259,7 +1243,7 @@ void cle(string inp)
         }
         while (!toBeDelete.empty())
         {
-            for (int i = 0; i < fifo.size(); i++)
+            for (int i = 0; i < (int)fifo.size(); i++)
             {
                 if (toBeDelete.front().name == fifo[i].name)
                 {
@@ -1283,7 +1267,7 @@ void cle(string inp)
             }
         }
         listName.erase(toBeDelete.name);
-        for (int i = 0; i < fifo.size(); i++)
+        for (int i = 0; i < (int)fifo.size(); i++)
         {
             if (toBeDelete.name == fifo[i].name)
             {
@@ -1291,7 +1275,7 @@ void cle(string inp)
                 break;
             }
         }
-        for (int i = 0; i < lrco.size(); i++)
+        for (int i = 0; i < (int)lrco.size(); i++)
         {
             if (toBeDelete.name == lrco[i].name)
             {
@@ -1357,25 +1341,25 @@ void simulate(string filename)
     if (file.is_open())
     {
         string line;
-        int numLine = 1;
 
         while (getline(file, line))
         {
-            int check = line.find(" ");
+            size_t check = line.find(" ");
             if (check != string::npos)
             {
                 string command = getCommand(line);
-                if (command == "invalid command")
-                {
-                    continue;
-                }
-                else if (command == "REG")
+
+                if (command == "REG")
                 {
                     reg(line);
                 }
                 else if (command == "CLE")
                 {
                     cle(line);
+                }
+                else
+                {
+                    continue;
                 }
             }
             else if (check == string::npos)

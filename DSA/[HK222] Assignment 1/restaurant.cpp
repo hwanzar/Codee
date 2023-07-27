@@ -748,13 +748,6 @@ void cle(string input, restaurant *r, DLL *waitlist, DLL *history, DLL *Squeue)
     }
     else
     {
-        // bàn đơn
-        // DLL::Node *node_cle = new DLL::Node(tbclr->ID, tbclr->name, tbclr->age, nullptr);
-        // int indexTB = findNodeIndex(history, node_cle);
-        // // cout<< indexTB << "debug **" << endl;
-        // // printForward(*history, 1);
-        // history->removeAt(indexTB);
-        // delete node_cle; // memory leak
         history->removeItem(tbclr->name, tbclr->age);
         if (!Squeue->empty())
         {

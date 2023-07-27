@@ -12,131 +12,51 @@ protected:
     int count;
 
 public:
-    SLinkedList() : head(NULL), tail(NULL), count(0){};
-    ~SLinkedList(){};
-    void add(T e)
+    SLinkedList()
     {
-        Node *newNode = new Node(e, nullptr);
-        if (head == nullptr)
-        {
-            head = newNode;
-            tail = newNode;
-        }
-        else
-        {
-            tail->next = newNode;
-            tail = newNode;
-        }
-        count++;
+        head = nullptr;
+        tail = nullptr;
+        count = 0;
     }
-    void add(int index, T e)
+    ~SLinkedList()
     {
-        if (index == count)
-        {
-            add(e);
-        }
-        else if (index == 0)
-        {
-            Node *newNode = new Node(e, head);
-            head = newNode;
-            count++;
-        }
-        else
-        {
-            Node *current = head;
-            for (int i = 0; i < index - 1; i++)
-            {
-                current = current->next;
-            }
-            Node *newNode = new Node(e, current->next);
-            current->next = newNode;
-            count++;
-        }
-    }
-    int size()
-    {
-        return count;
-    }
-    bool empty()
-    {
-        if (head == nullptr)
-            return true;
-        return false;
-    }
-    T get(int index)
-    {
-        if (index >= count)
-            return T();
-
-        Node *p = head;
-        for (int i = 0; i < index; i++)
-        {
-            p = p->next;
-        }
-        return p->data;
-    }
-    void set(int index, T e)
-    {
-        if (index >= count)
-            return;
-        Node *current = head;
-        for (int i = 0; i < index; i++)
-        {
-            current = current->next;
-        }
-
-        current->data = e;
-    }
-    int indexOf(T item)
-    {
-        // return the first index whether item appears in list, otherwise return -1;
-        return -1;
-    }
-    bool contains(T item)
-    {
-        // check if the item appear in the list
         Node *cur = head;
         while (cur != nullptr)
         {
-            if (item == cur->data)
-            {
-                return true;
-            }
+            Node *temp = cur;
             cur = cur->next;
+            delete temp;
         }
-        return false;
+        // delete tail;
     }
+    void add(const T &e);
+    void add(int index, const T &e);
+    T get(int index);
+    void set(int index, T e);
+    int indexOf(T item);
+    bool contains(T item);
+    bool empty();
+    int size();
     string toString()
     {
+        Node *prt = head;
         if (head == nullptr)
-            return "NULL";
-        string res = "[";
-        Node *p1 = head;
-        while (p1 != nullptr)
+            return "[]";
+
+        string ans = "[";
+        ans += to_string((int)head->data);
+        prt = prt->next;
+        for (int i = 1; i < count; i++)
         {
-            res += to_string(p1->data);
-            if (p1->next != nullptr)
-            {
-                res += ",";
-            }
-            p1 = p1->next;
+            ans += ",";
+            ans += to_string((int)prt->data);
+            prt = prt->next;
         }
-        res += "]";
-        return res;
+        return ans + "]";
     }
-
-    T removeAt(int index)
-    {
-        return T();
-    }
-
-    bool removeItem(T item)
-    {
-    }
-
-    void clear()
-    {
-    }
+    T removeAt(int index);
+    bool removeItem(T item);
+    void clear();
 
 public:
     class Node
@@ -149,13 +69,13 @@ public:
     public:
         Node()
         {
-            next = 0;
+            next = nullptr;
         }
         Node(Node *next)
         {
             this->next = next;
         }
-        Node(T data, Node *next = NULL)
+        Node(T data, Node *next = nullptr)
         {
             this->data = data;
             this->next = next;
@@ -163,41 +83,187 @@ public:
     };
 };
 
+template <class T>
+void SLinkedList<T>::add(const T &e)
+{
+    Node *newNode = new Node(e, nullptr);
+    if (head == nullptr)
+    {
+        head = newNode;
+        tail = newNode;
+    }
+    else
+    {
+        tail->next = newNode;
+        tail = newNode;
+    }
+    count++;
+}
+
+template <class T>
+void SLinkedList<T>::add(int index, const T &e)
+{
+    if (index == count)
+    {
+        add(e);
+    }
+    else if (index == 0)
+    {
+        Node *newNode = new Node(index, head);
+        head = newNode;
+        count++;
+    }
+    else
+    {
+        Node *cur = head;
+        for (int i = 0; i < index - 1; i++)
+        {
+            cur = cur->next;
+        }
+        Node *newNode = new Node(e, cur->next);
+        cur->next = newNode;
+        count++;
+    }
+}
+
+template <class T>
+T SLinkedList<T>::get(int index)
+{
+    // get value of specified index
+    if (index >= count)
+        return T();
+    Node *cur = head;
+    for (int i = 0; i < index; i++)
+    {
+        cur = cur->next;
+    }
+    return cur->data;
+}
+template <class T>
+void SLinkedList<T>::set(int index, T e)
+{
+    if (index >= count)
+        return;
+    Node *cur = head;
+    for (int i = 0; i < index; i++)
+    {
+        cur = cur->next;
+    }
+    cur->data = e;
+    return;
+}
+template <class T>
+int SLinkedList<T>::indexOf(T item)
+{
+    // get index;
+    if (head == nullptr)
+    {
+        return -1;
+    }
+    Node *cur = head;
+    for (int i = 0; i < count; i++)
+    {
+        if (cur->data == item)
+        {
+            return i;
+        }
+        cur = cur->next;
+    }
+    return -1;
+}
+
+template <class T>
+int SLinkedList<T>::size()
+{
+    return count;
+}
+
+template <class T>
+T SLinkedList<T>::removeAt(int index)
+{
+    if (index >= count)
+        return T();
+    Node *cur = head;
+    Node *prev = nullptr;
+    for (int i = 0; i < index; i++)
+    {
+        prev = cur;
+        cur = cur->next;
+    }
+    T removeValue = cur->data;
+    if (prev == nullptr)
+    {
+        head = cur->next;
+    }
+    else
+    {
+        prev->next = cur->next;
+    }
+    if (cur == tail)
+    {
+        tail = prev;
+    }
+    delete cur;
+    count--;
+    return removeValue;
+}
+
+template <class T>
+bool SLinkedList<T>::removeItem(T item)
+{
+    Node *cur = head;
+    Node *prev = nullptr;
+
+    while (cur != nullptr)
+    {
+        if (cur->data == item)
+        {
+            if (prev == nullptr)
+            {
+                head = cur->next;
+            }
+            else
+            {
+                prev->next = cur->next;
+            }
+            if (cur == tail)
+            {
+                tail = prev;
+            }
+
+            delete cur;
+            count--;
+            return true;
+        }
+        prev = cur;
+        cur = cur->next;
+    }
+    return false;
+}
+
+template <class T>
+void SLinkedList<T>::clear()
+{
+    for (int i = 0; i < count; i++)
+    {
+        Node *temp = head;
+        head = head->next;
+        delete temp;
+    }
+    count = 0;
+    return;
+}
+
 int main()
 {
-    // SLinkedList<int> list;
-    // int values[] = {10, 15, 2, 6, 4, 7, 40, 8};
-    // int index[] = {0, 0, 1, 3, 2, 3, 5, 0};
-    // int expvalues[] = {8, 15, 2, 4, 7, 10, 40, 6};
 
-    // for (int idx = 0; idx < 8; idx++)
-    // {
-    //     list.add(index[idx], values[idx]);
-    // }
-
-    // assert(list.size() == 8);
-
-    // for (int idx = 0; idx < 8; idx++)
-    // {
-    //     assert(list.get(idx) == expvalues[idx]);
-    // }
-    // cout << list.contains(7) << endl;
-    // cout << list.toString();
     SLinkedList<int> list;
 
     for (int i = 0; i < 10; ++i)
     {
         list.add(i);
     }
-    for (int i = 0; i < 10; ++i)
-    {
-        list.set(i, i + 10);
-    }
-    for (int i = 0; i < 10; ++i)
-    {
-        assert(list.get(i) == i + 10);
-    }
-
+    assert(list.get(9) == list.removeAt(9));
+    list.clear();
     cout << list.toString();
-    return 0;
 }

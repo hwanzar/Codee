@@ -5,7 +5,7 @@ using namespace std;
 
 string getCommand(string input)
 {
-    int pos = input.find(" ");
+    size_t pos = input.find(" ");
     if (pos == string::npos)
         return "invalid command";
     string command = input.substr(0, pos);
@@ -34,12 +34,44 @@ string getName(string input)
     }
     return ans;
 }
+string getNum(string inp)
+{
+    string tempInp = inp;
+    size_t pos = tempInp.find_last_of(" ");
+    if (pos != string::npos)
+    {
+        tempInp = tempInp.substr(pos + 1);
+    }
+    string result = "";
+    try
+    {
+        result = to_string(stoi(tempInp));
+    }
+    catch (const std::invalid_argument &e)
+    {
+        // handle the exception here
+        result = "invalid number";
+    }
+    return result;
+}
 
 int main()
 {
-    string line = "REG88 GIA";
+    string line = "CLE -";
+
     string command = getCommand(line);
-    cout << command << endl;
-    string name = getName(line);
-    cout << name << endl;
+    if (command == "CLE")
+    {
+        cout << command << endl;
+    }
+    else
+    {
+        cout << "Sai";
+    }
+    string num = getNum(line);
+    // if (num == "")
+    // {
+    //     cout << "empty";
+    // }
+    cout << num << endl;
 }
