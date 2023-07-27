@@ -1,37 +1,37 @@
 #include "main.h"
-#include <unordered_map>
-#include <queue>
-#include <vector>
-// class table
-// {
-// public:
-//     int id;
-//     string name;
-//     int result;
-//     int dish;
-//     int recentOrder;
-//     int typeArea;
-//     table(int id = 0, string name = "", int result = 0, int dish = 0, int recentOrder = 0, int typeArea = 0)
-//     {
-//         this->id = id;
-//         this->name = name;
-//         this->result = result;
-//         this->dish = dish;
-//         this->recentOrder = recentOrder;
-//         this->typeArea = typeArea;
-//     }
-//     bool operator==(const table &other) const
-//     {
-//         return id == other.id && name == other.name && result == other.result && dish == other.dish && recentOrder == other.recentOrder && typeArea == other.typeArea;
-//     }
-// };
+
+class table
+{
+public:
+    int id;
+    string name;
+    int result;
+    int dish;
+    int recentOrder;
+    int typeArea;
+    table(int id = 0, string name = "", int result = 0, int dish = 0, int recentOrder = 0, int typeArea = 0)
+    {
+        this->id = id;
+        this->name = name;
+        this->result = result;
+        this->dish = dish;
+        this->recentOrder = recentOrder;
+        this->typeArea = typeArea;
+    }
+    bool operator==(const table &other) const
+    {
+        return id == other.id && name == other.name && result == other.result && dish == other.dish && recentOrder == other.recentOrder && typeArea == other.typeArea;
+    }
+};
 
 class HuffmanCoding
 {
 public:
     class Node;
     struct comparator;
+    Node *root;
 
+public:
     Node *getNode(char ch, int freq, Node *left, Node *right)
     {
         Node *node = new Node();
@@ -74,8 +74,8 @@ public:
             pq.pop();
             // cout << left->ch << right->ch << endl;
             int sum = left->freq + right->freq;
-
             pq.push(make_pair(getNode('~', sum, left, right), ++order));
+
             // debugPQ(pq);
         }
 
@@ -103,6 +103,13 @@ public:
         {
             result += huffmanCode[ch];
         }
+
+        while (!pq.empty())
+        {
+            delete pq.top().first;
+            pq.pop();
+        }
+        // delete root;
         return result;
     }
 
@@ -138,6 +145,14 @@ public:
         else
             decode(root->right, index, str);
     }
+    void clear(Node *node)
+    {
+        if (!node)
+            return;
+        clear(node->left);
+        clear(node->right);
+        delete node;
+    }
     // void debugPQ(
     // 	priority_queue<Node *, vector<Node *>, comparator> gq)
     // {
@@ -168,10 +183,19 @@ public:
         Node *left, *right;
 
     public:
-        Node()
+        // Node()
+        // {
+        //     this->ch = ch;
+        //     this->freq = freq;
+        // }
+        Node(char c = '\0', int f = 0, Node *l = nullptr, Node *r = nullptr)
+            : ch(c), freq(f), left(l), right(r)
         {
-            this->ch = ch;
-            this->freq = freq;
+        }
+        ~Node()
+        {
+            delete left;
+            delete right;
         }
         bool isLeaf()
         {
@@ -192,7 +216,6 @@ public:
         }
     };
 };
-
 class HashTable
 {
 public:
@@ -923,7 +946,7 @@ void reg(string input)
     string binaryName = huffman->HuffmanTree(name);
     int binNameLen = binaryName.length();
     string newName = (binNameLen > 15) ? binaryName.substr(binNameLen - 15) : binaryName;
-
+    delete huffman;
     // cout << "== Debug HUFFMAN ==\n"
     //  << newName << endl;
 
@@ -1210,11 +1233,11 @@ void cle(string inp)
                     }
                     lrcoIndex++;
                 }
-                cout << lfco.findIndex(x.name) << " ";
-                if (lfco.findIndex(x.name) == -1)
-                {
-                    cout << x.name << endl;
-                }
+                // cout << lfco.findIndex(x.name) << " ";
+                // if (lfco.findIndex(x.name) == -1)
+                // {
+                //     cout << x.name << endl;
+                // }
                 lfco.remove(lfco.findIndex(x.name));
                 listName.erase(x.name);
                 area2.deleteAVLTree(x.result, x.name);
@@ -1367,5 +1390,6 @@ void simulate(string filename)
     else
         cout << "Not found FILE" << endl;
     // cout.close();
+
     return;
 }
